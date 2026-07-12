@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太陽風暴警報台（任務四開場・1976 維京一號）</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c; --amber:#ffb347; --cyan:#5ec8f2;
+  --green:#39d353; --red:#ff5c47; --px:#f2e3c8; --text:#c9d6e8; --dim:#5a748f;
+}
+*{margin:0; padding:0; box-sizing:border-box;}
+html,body{height:100%; overflow:hidden;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Courier New', 'Noto Sans TC', monospace; letter-spacing:.02em;
+  display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 8%,  #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 76% 30%, #ffffff55 50%, transparent 51%),
+    radial-gradient(2px 2px at 88% 74%, #ffffff33 50%, transparent 51%),
+    radial-gradient(1px 1px at 30% 84%, #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 58%, #ffffff33 50%, transparent 51%);
+}
+header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 20px 8px; border-bottom:2px solid var(--line); flex:0 0 auto;
+}
+h1{font-size:1.25rem; color:var(--px); letter-spacing:.14em;}
+h1 small{display:block; font-size:.62rem; color:var(--dim); letter-spacing:.3em; margin-top:2px;}
+.statusbar{text-align:right; font-size:.72rem; color:var(--cyan); line-height:1.7;}
+.blink{animation:bl 1s steps(2) infinite; color:var(--red);}
+@keyframes bl{50%{opacity:0;}}
+.broadcast{
+  margin:8px 20px 0; border:1px solid var(--line); border-left:4px solid var(--red);
+  background:var(--panel); padding:7px 14px; font-size:.8rem; line-height:1.55; flex:0 0 auto;
+}
+.broadcast b{color:var(--red);}
+.modebar{display:flex; gap:10px; justify-content:center; align-items:center; padding:10px 0 4px; flex:0 0 auto;}
+.modebtn{
+  font-family:inherit; font-size:.95rem; letter-spacing:.1em; cursor:pointer;
+  background:#101a2c; color:var(--dim); border:1px solid var(--line); padding:10px 22px;
+}
+.modebtn.on{background:var(--amber); color:#08131f; border-color:var(--amber); font-weight:bold;}
+button.op{
+  font-family:inherit; font-size:.8rem; cursor:pointer; letter-spacing:.06em;
+  background:#101a2c; color:var(--cyan); border:1px solid var(--line); padding:8px 14px;
+}
+button.op:hover{background:var(--cyan); color:#08131f;}
+main{flex:1 1 auto; display:flex; align-items:stretch; justify-content:center; min-height:0; padding:6px 18px 4px;}
+.view{display:none; flex:1; min-height:0;}
+.view.on{display:flex;}
+footer{flex:0 0 auto; text-align:center; font-size:.62rem; color:var(--dim); letter-spacing:.28em; padding:6px 0 8px;}
+
+/* ---- 警報視圖 ---- */
+#v-alert{flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center;}
+.bigwarn{
+  font-size:4.2rem; color:var(--red); animation:bl 1s steps(2) infinite;
+}
+.alertbox{
+  border:2px solid var(--red); background:#160b0e; padding:22px 40px; max-width:900px;
+  text-align:left; font-size:1.02rem; line-height:2.05;
+}
+.alertbox b{color:var(--amber);}
+.alertbox .rline{color:var(--red);}
+button.big{
+  font-family:inherit; font-size:1.05rem; letter-spacing:.12em;
+  background:#241a10; color:var(--amber); border:1px solid var(--amber);
+  padding:14px 46px; cursor:pointer;
+}
+button.big:hover{background:var(--amber); color:#08131f;}
+
+/* ---- 通訊窗口視圖 ---- */
+#v-timer{flex-direction:column; align-items:center; justify-content:center; gap:14px;}
+.winrow{display:flex; gap:14px;}
+.winbtn{
+  font-family:inherit; font-size:1.02rem; letter-spacing:.08em; cursor:pointer;
+  background:#101a2c; color:var(--text); border:2px solid var(--line); padding:14px 26px; line-height:1.5;
+}
+.winbtn small{display:block; font-size:.7rem; color:var(--dim);}
+.winbtn.sel{border-color:var(--cyan); color:var(--cyan); background:#0d1a2e;}
+.winbtn.done{border-color:var(--green); color:var(--green); opacity:.75;}
+#clock{
+  font-size:11.5rem; font-weight:bold; color:var(--green); line-height:1;
+  letter-spacing:.06em; font-variant-numeric:tabular-nums;
+}
+#clock.warn10{color:var(--amber);}
+#clock.warn5{color:var(--red); animation:bl .5s steps(2) infinite;}
+#clock-label{font-size:1rem; color:var(--dim); letter-spacing:.2em; margin-top:-8px;}
+.pkrow{display:flex; gap:12px; align-items:center;}
+.pk{
+  width:74px; padding:10px 0; text-align:center; font-size:.8rem; cursor:pointer;
+  border:2px solid var(--line); color:var(--dim); background:#0a0f1c; line-height:1.5;
+}
+.pk b{display:block; font-size:1.1rem; color:inherit;}
+.pk.sent{border-color:var(--amber); color:var(--amber); background:#241a10;}
+.timerops{display:flex; gap:14px; align-items:center;}
+
+/* ---- 逐點揭示視圖 ---- */
+#v-reveal{gap:30px; align-items:center; justify-content:center;}
+.gridcol{text-align:center;}
+.colnums{display:grid; gap:1px; font-size:.72rem; color:var(--dim); margin-left:26px;}
+.colnums div{display:flex; align-items:center; justify-content:center; padding-bottom:3px;}
+.gridflex{display:flex; align-items:center; gap:6px; justify-content:center;}
+.rownums{display:grid; gap:1px; font-size:.72rem; color:var(--dim);}
+.rownums div{display:flex; align-items:center; justify-content:center; padding-right:4px;}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:1px; background:#152441;}
+.pxgrid .c{background:#0a0f1c;}
+.pxgrid.paint .c{cursor:crosshair;}
+.newdot{box-shadow:inset 0 0 0 3px var(--cyan);}
+.gridlabel{font-size:.74rem; color:var(--dim); margin-top:6px;}
+.workcol{flex:0 1 480px; min-width:340px; display:flex; flex-direction:column; gap:10px;}
+.qtitle{font-size:.98rem; color:var(--cyan); letter-spacing:.08em;}
+.subbar{display:flex; gap:8px;}
+.subbtn{
+  font-family:inherit; flex:1; font-size:.85rem; cursor:pointer; padding:9px 0;
+  background:#101a2c; color:var(--dim); border:1px solid var(--line);
+}
+.subbtn.on{background:#0d1a2e; color:var(--cyan); border-color:var(--cyan);}
+.objname{font-size:1.15rem; color:var(--px); letter-spacing:.14em; text-align:center; padding:4px 0;}
+.wrow{display:flex; gap:8px;}
+.wkey{
+  font-family:inherit; flex:1; font-size:.92rem; cursor:pointer; padding:13px 0; line-height:1.5;
+  background:#101a2c; color:var(--text); border:2px solid var(--line);
+}
+.wkey small{display:block; font-size:.66rem; color:var(--dim);}
+.wkey:hover{border-color:var(--cyan); color:var(--cyan);}
+.wkey:disabled{opacity:.32; cursor:default;}
+.wkey:disabled:hover{border-color:var(--line); color:var(--text);}
+.wkey.used{border-color:var(--green); color:var(--green); opacity:.7;}
+.stat{
+  display:inline-block; border:1px solid var(--line); background:#050810;
+  padding:6px 12px; font-size:.76rem;
+}
+.stat b{color:var(--amber); font-size:.95rem;}
+.gkey{
+  font-family:inherit; flex:1; font-size:.86rem; cursor:pointer; padding:11px 0 9px; line-height:1.4;
+  border:2px solid var(--line); background:#101a2c; color:var(--text);
+}
+.gkey .sw{display:block; width:26px; height:14px; margin:0 auto 4px;}
+.gkey.sel{border-color:var(--cyan); color:var(--cyan); background:#0d1a2e;}
+.hinttxt{font-size:.74rem; color:var(--dim); line-height:1.8;}
+.feedback{min-height:22px; font-size:.82rem;}
+.warn{color:var(--amber);} .okc{color:var(--green);}
+.smallrow{display:flex; gap:8px; justify-content:flex-end;}
+
+/* ---- 窗口關閉 overlay ---- */
+.overlay{
+  position:fixed; inset:0; background:rgba(4,7,14,.94); z-index:1000;
+  display:none; align-items:center; justify-content:center; padding:16px;
+}
+.overlay.on{display:flex;}
+.result{
+  border:2px solid var(--red); background:#160b0e; padding:34px 60px; text-align:center; max-width:820px;
+}
+.result h2{color:var(--red); font-size:2.3rem; letter-spacing:.12em; margin-bottom:12px;}
+.result .hint{font-size:.95rem; color:var(--text); line-height:1.9; margin-bottom:18px;}
+</style>
+</head>
+<body>
+<a href="mission-control.html" style="position:fixed; left:10px; bottom:8px; z-index:5; font-size:.66rem; color:#5a748f; text-decoration:none; letter-spacing:.12em;">⌂ 任務入口</a>
+
+
+<header>
+  <h1>太陽風暴警報台<small>MISSION 04 OPENING · VIKING 1 · 1976 · SOLAR CONJUNCTION ALERT</small></h1>
+  <div class="statusbar">
+    <div>SOLAR CONJUNCTION IMMINENT <span class="blink">▲</span></div>
+    <div>通訊中斷倒數中｜任務：中斷前傳完所有照片</div>
+  </div>
+</header>
+
+<main>
+  <!-- 警報 -->
+  <section class="view on" id="v-alert">
+    <div class="bigwarn">⚠ ⚠ ⚠</div>
+    <div class="alertbox">
+      <div class="rline"><b>【任務控制中心・緊急廣播】</b>1976 年 11 月——</div>
+      <div>火星即將繞到<b>太陽正後方</b>（太陽合），無線電將被太陽完全遮斷，<b>通訊中斷數週</b>！</div>
+      <div>太陽風暴同時來襲，訊號嚴重干擾——所有照片<b>必須趕在中斷前傳完</b>。</div>
+      <div>可是無線電<b>每秒只能送出幾百個訊號</b>，照片卻越積越多——時間根本不夠！</div>
+      <div class="rline">工程師們，只剩一條路：讓資料變短。</div>
+    </div>
+    <button class="big" id="go-timer">⏱ 通訊倒數計時器</button>
+  </section>
+
+  <!-- 通訊窗口 -->
+  <section class="view" id="v-timer">
+    <div class="winrow">
+      <button class="winbtn sel" data-w="0">短倒數<small>1 分鐘</small></button>
+      <button class="winbtn" data-w="1">中倒數<small>3 分鐘</small></button>
+      <button class="winbtn" data-w="2">長倒數<small>5 分鐘</small></button>
+    </div>
+    <div id="clock">45</div>
+    <div id="clock-label">按「開始倒數」啟動</div>
+    <div class="timerops">
+      <button class="big" id="t-start">📡 開始倒數</button>
+      <button class="op" id="t-stop">中止</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- 窗口關閉 overlay -->
+<div class="overlay" id="closeovl">
+  <div class="result">
+    <h2>⏳ 時間到</h2>
+    <div class="hint" id="close-note">太陽合持續逼近——傳輸時間越來越少，資料必須更短！</div>
+    <button class="big" id="close-ok">收到</button>
+  </div>
+</div>
+
+<footer>MISSION 04 · 火星第一眼：1976 維京一號的拍照任務</footer>
+
+<script>
+/* ---------- 8×8 四階灰階影像庫（沿用任務三） ---------- */
+function G(rows){ return rows.map(r=>r.split('').map(Number)); }
+const GRAYLIB = {
+  '火山': G(['22222222','22231222','22331122','23331112','33331111','33331111','11111111','21212121']),
+  '隕石坑': G(['22222222','22333322','23111132','23100112','23100112','23111112','22111122','22222222']),
+  '沙丘': G(['22222222','22222222','23312222','33311222','33111332','31113311','22222222','21212122']),
+  '火星日出': G(['11111111','11122111','12233221','22333322','23333332','11233211','00111100','00000000']),
+  '巨大岩石': G(['22222222','22233222','23333122','33333112','33331112','23311122','22111222','22222222']),
+};
+const GRAYC = ['#0d0d0d','#4d4d4d','#9e9e9e','#f0f0f0'];
+const GRAYNAME = ['0 黑','1 深灰','2 淺灰','3 白'];
+/* 逐點揭示用：輪廓分明的 8×8 黑白地貌（沿用任務二、四） */
+function P(rows){ return rows.map(r=>r.split('').map(Number)); }
+const LIB8 = {
+  '隕石坑': P(['00111100','01111110','11000011','11011011','11011011','11000011','01111110','00111100']),
+  '火山':   P(['00100100','00111100','00111100','01111110','01111110','11111111','11111111','00000000']),
+  '沙丘':   P(['00000000','00000000','00000000','00110000','01111010','11111111','11111111','00000000']),
+  '巨大岩石': P(['00000000','00111100','01111110','11111111','11111111','01111110','00011100','00000000']),
+  '古河道': P(['00011000','00110000','01100000','01100000','00110000','00011000','00001100','00011000']),
+  '塵捲風': P(['01111110','00111100','00111100','00011000','00011000','00001000','00011100','00000000']),
+  '墜落的隕石': P(['00000011','00000110','00001100','00011000','00110000','01111000','11111000','01110000']),
+};
+const BRIGHT='#f2e3c8';
+const EMPTY = '#0a0f1c';
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function viewSize(){ return Math.max(280, Math.min(window.innerHeight-320, 470)); }
+
+/* ---------- 檢視切換 ---------- */
+const VIEWS=['alert','timer'];
+function show(v){
+  VIEWS.forEach(x=>document.getElementById('v-'+x).classList.toggle('on', x===v));
+  document.querySelectorAll('.modebtn').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+}
+const bar=document.createElement('div'); bar.className='modebar';
+bar.innerHTML=`
+  <button class="modebtn on" data-v="alert">🚨 風暴警報</button>
+  <button class="modebtn" data-v="timer">⏱ 倒數計時</button>
+`;
+document.querySelector('main').before(bar);
+bar.querySelectorAll('.modebtn').forEach(b=>b.addEventListener('click',()=>show(b.dataset.v)));
+document.getElementById('go-timer').addEventListener('click',()=>show('timer'));
+
+/* ---------- 通訊窗口倒數 ---------- */
+const WINS=[60,180,300];
+let curWin=0, remain=WINS[0], ticking=null;
+const winDone=[false,false,false];
+let audio=null;
+function beep(freq,dur,vol){
+  try{
+    audio = audio || new (window.AudioContext||window.webkitAudioContext)();
+    const o=audio.createOscillator(), g=audio.createGain();
+    o.type='square'; o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,audio.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+dur);
+    o.connect(g); g.connect(audio.destination);
+    o.start(); o.stop(audio.currentTime+dur);
+  }catch(e){}
+}
+const clock=document.getElementById('clock');
+function drawClock(){
+  clock.textContent = remain>=60 ? Math.floor(remain/60)+':'+String(remain%60).padStart(2,'0') : remain;
+  clock.className = remain<=5&&ticking?'warn5':remain<=10&&ticking?'warn10':'';
+}
+function selWin(w){
+  if(ticking) return;
+  curWin=w; remain=WINS[w];
+  document.querySelectorAll('.winbtn').forEach((b,i)=>b.classList.toggle('sel',i===w));
+  document.getElementById('clock-label').textContent='按「開始倒數」啟動';
+  drawClock();
+}
+document.querySelectorAll('.winbtn').forEach(b=>b.addEventListener('click',()=>selWin(+b.dataset.w)));
+function stopTick(){ clearInterval(ticking); ticking=null; }
+document.getElementById('t-start').addEventListener('click',()=>{
+  if(ticking) return;
+  remain=WINS[curWin];
+  document.getElementById('clock-label').textContent='倒數進行中';
+  beep(880,.12,.25);
+  ticking=setInterval(()=>{
+    remain--;
+    if(remain<=10&&remain>0) beep(remain<=5?1200:700,.07,.2);
+    if(remain<=0){
+      stopTick(); drawClock();
+      beep(160,.9,.35);
+      document.getElementById('closeovl').classList.add('on');
+      return;
+    }
+    drawClock();
+  },1000);
+  drawClock();
+});
+function selWinForce(w){
+  curWin=w; remain=WINS[w];
+  document.querySelectorAll('.winbtn').forEach((b,i)=>b.classList.toggle('sel',i===w));
+}
+document.getElementById('t-stop').addEventListener('click',()=>{
+  stopTick(); remain=WINS[curWin];
+  document.getElementById('clock-label').textContent='已中止——按「開始倒數」重新開始';
+  drawClock();
+});
+document.getElementById('close-ok').addEventListener('click',()=>{
+  document.getElementById('closeovl').classList.remove('on');
+  document.getElementById('clock-label').textContent='按「開始倒數」啟動';
+  drawClock();
+});
+drawClock();
+
+</script>
+</body>
+</html>

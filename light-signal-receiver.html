@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光訊號接收站（學生）｜1976 維京一號</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New","Consolas","Noto Sans TC",monospace;
+  overflow:hidden; display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff8 0, transparent 40%),
+    radial-gradient(1px 1px at 70% 15%, #fff6 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff5 0, transparent 40%),
+    radial-gradient(1px 1px at 85% 60%, #fff7 0, transparent 40%),
+    radial-gradient(1px 1px at 10% 85%, #fff5 0, transparent 40%);
+}
+header{
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+  padding:10px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+h1{font-size:1.05rem; letter-spacing:.1em; color:var(--amber);}
+h1 small{display:block; color:var(--dim); font-size:.6rem; letter-spacing:.25em; margin-top:3px;}
+.statusbar{margin-left:auto; font-size:.65rem; color:var(--green);}
+.blink{animation:bl 1.2s steps(2) infinite;}
+@keyframes bl{50%{opacity:.25}}
+main{flex:1; display:flex; flex-direction:column; padding:12px 18px; overflow:hidden; max-width:1200px; width:100%; margin:0 auto;}
+.broadcast{
+  border:1px solid var(--line); border-left:5px solid var(--red);
+  background:var(--panel); padding:8px 14px; margin-bottom:10px;
+  font-size:.74rem; line-height:1.7;
+}
+.broadcast b{color:var(--red); letter-spacing:.12em;}
+.console{
+  flex:1; border:1px solid var(--line); background:var(--panel);
+  display:flex; flex-wrap:wrap; gap:34px; padding:14px 20px; justify-content:center; align-items:center; overflow:hidden;
+}
+.gridcol{text-align:center;}
+.gridflex{display:flex; align-items:center; gap:8px; justify-content:center;}
+.rownums{display:grid; gap:1px; font-size:.75rem; color:var(--dim);}
+.rownums div{display:flex; align-items:center; justify-content:center; padding-right:5px;}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:2px; background:#152441;}
+.pxgrid .c{background:#0a0f1c; cursor:pointer;}
+.cur2{box-shadow:inset 0 0 0 3px var(--amber);}
+.gridlabel{font-size:.76rem; color:var(--dim); margin-top:8px;}
+.workcol{flex:0 1 460px; min-width:330px;}
+.qtitle{font-size:1.1rem; color:var(--cyan); letter-spacing:.08em; margin-bottom:14px; line-height:1.7;}
+.keyrow{display:flex; gap:14px; margin-top:14px;}
+.key{
+  font-family:inherit; flex:1; font-size:1.7rem; font-weight:bold; padding:16px 0 12px;
+  cursor:pointer; letter-spacing:0; line-height:1.15;
+}
+.key small{display:block; font-size:.66rem; font-weight:normal; letter-spacing:.1em; margin-top:4px;}
+.key.k0{background:#0d1a2e; color:var(--cyan); border:2px solid var(--cyan);}
+.key.k0:hover{background:var(--cyan); color:#08131f;}
+.key.k1{background:#241a10; color:var(--amber); border:2px solid var(--amber);}
+.key.k1:hover{background:var(--amber); color:#08131f;}
+.key.kfl{background:#0d2416; color:var(--green); border:2px solid var(--green);}
+.key.kfl:hover{background:var(--green); color:#08131f;}
+.key.kbs{background:#1a0f12; color:var(--red); border:2px solid var(--red); flex:0 0 110px;}
+.key.kbs:hover{background:var(--red); color:#08131f;}
+.feedback{min-height:32px; font-size:1rem; margin-top:14px; line-height:1.8;}
+.ok{color:var(--green);} .warn{color:var(--amber);}
+.smallrow{display:flex; gap:10px; margin-top:10px; justify-content:flex-end;}
+button.op{
+  font-family:inherit; font-size:.8rem;
+  background:#132038; color:var(--text); border:1px solid var(--cyan);
+  padding:8px 16px; cursor:pointer;
+}
+button.op:hover{background:var(--cyan); color:#08131f;}
+footer{border-top:1px solid var(--line); color:var(--dim); font-size:.62rem; text-align:center; padding:12px; letter-spacing:.15em;}
+</style>
+</head>
+<body>
+<a href="mission-control.html" style="position:fixed; left:10px; bottom:8px; z-index:5; font-size:.66rem; color:#5a748f; text-decoration:none; letter-spacing:.12em;">⌂ 任務入口</a>
+
+
+<header>
+  <h1>光訊號接收站（學生）<small>MISSION 02 · VIKING 1 · LIGHT SIGNAL RECEIVER</small></h1>
+  <div class="statusbar">接收中 <span class="blink">●</span></div>
+</header>
+
+<main>
+  <div class="broadcast"><b>【接收守則】</b>
+    眼睛盯著訊號燈：這一拍<b style="color:var(--amber)">亮就按「亮」、暗就按「暗」</b>；看到<b style="color:var(--green)">快速閃爍就按「⚡」</b>對齊下一列開頭。由左至右、由上至下，一拍一格，共 5 列 25 格。
+  </div>
+
+  <div class="console">
+    <div class="gridcol">
+      <div class="gridflex">
+        <div class="rownums" id="live-nums"></div>
+        <div class="pxwrap"><div id="live-grid" class="pxgrid"></div></div>
+      </div>
+      <div class="gridlabel">你的接收畫布（5×5）——跟著訊號燈，一拍畫一格（點格子可移動位置）</div>
+    </div>
+
+    <div class="workcol">
+      <div class="qtitle">▶ 看著訊號燈：亮按「亮」、暗按「暗」、快速閃爍按「⚡」</div>
+      <div class="keyrow">
+        <button class="key k1" id="lk-1">亮<small>這一拍是亮的</small></button>
+        <button class="key k0" id="lk-0">暗<small>這一拍是暗的</small></button>
+      </div>
+      <div class="keyrow">
+        <button class="key kfl" id="lk-fl">⚡ 閃爍！<small>對齊下一列開頭</small></button>
+        <button class="key kbs" id="lk-bs">⌫<small>退格</small></button>
+      </div>
+      <div class="feedback" id="live-fb"></div>
+      <div class="smallrow"><button class="op" id="live-clear">清空重收</button></div>
+    </div>
+  </div>
+</main>
+
+<footer>MISSION 02 · 火星第一眼：1976 維京一號的拍照任務 · 學生接收端</footer>
+
+<script>
+let liveData=[], liveCur=0, liveCells=[];
+function viewSize(){ return Math.max(320, Math.min(window.innerHeight-260, 520)); }
+function liveRender(){
+  liveCells.forEach((d,i)=>{
+    const v=liveData[i];
+    d.style.background = v===null ? '#0a0f1c' : (v ? 'var(--px)' : '#18213a');
+    d.classList.toggle('cur2', i===liveCur);
+  });
+  const filled=liveData.filter(v=>v!==null).length;
+  if(filled>=25)
+    document.getElementById('live-fb').innerHTML='<span class="ok">✔ 25 格接收完成——等老師秀出「原始圖片」，比一比你畫得對不對！</span>';
+  else
+    document.getElementById('live-fb').innerHTML='已接收 <span class="warn">'+filled+'</span>／25 格（第 '+(Math.floor(liveCur/5)+1)+' 列・第 '+(liveCur%5+1)+' 格）';
+}
+function liveInit(){
+  liveData=Array(25).fill(null); liveCur=0; liveCells=[];
+  const el=document.getElementById('live-grid');
+  const cell=Math.round(viewSize()/5);
+  el.style.gridTemplateColumns=`repeat(5,${cell}px)`;
+  el.style.gridTemplateRows=`repeat(5,${cell}px)`;
+  el.innerHTML='';
+  for(let i=0;i<25;i++){ const d=document.createElement('div'); d.className='c';
+    d.addEventListener('click',()=>{ liveCur=i; liveRender(); });
+    el.appendChild(d); liveCells.push(d); }
+  const rn=document.getElementById('live-nums');
+  rn.style.gridTemplateRows=`repeat(5,${cell}px)`; rn.style.gap='2px';
+  rn.innerHTML=''; for(let i=1;i<=5;i++){const d=document.createElement('div');d.textContent=i;rn.appendChild(d);}
+  liveRender();
+}
+function livePress(v){ if(liveCur>=25) return; liveData[liveCur]=v; liveCur++; liveRender(); }
+document.getElementById('lk-1').addEventListener('click',()=>livePress(1));
+document.getElementById('lk-0').addEventListener('click',()=>livePress(0));
+document.getElementById('lk-fl').addEventListener('click',()=>{
+  const next=Math.ceil(liveCur/5)*5;
+  if(next<=24){ liveCur=next; liveRender();
+    document.getElementById('live-fb').innerHTML='<span class="warn">⚡ 已對齊第 '+(Math.floor(liveCur/5)+1)+' 列開頭</span>';
+  }else{ liveRender(); }
+});
+document.getElementById('lk-bs').addEventListener('click',()=>{
+  if(liveCur>0){ liveCur--; liveData[liveCur]=null; liveRender(); }
+});
+document.getElementById('live-clear').addEventListener('click',liveInit);
+liveInit();
+</script>
+</body>
+</html>

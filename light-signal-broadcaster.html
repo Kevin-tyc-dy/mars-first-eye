@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光訊號播送台（教師）｜1976 維京一號</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New","Consolas","Noto Sans TC",monospace;
+  overflow:hidden; display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff8 0, transparent 40%),
+    radial-gradient(1px 1px at 70% 15%, #fff6 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff5 0, transparent 40%),
+    radial-gradient(1px 1px at 85% 60%, #fff7 0, transparent 40%),
+    radial-gradient(1px 1px at 10% 85%, #fff5 0, transparent 40%);
+}
+header{
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+  padding:10px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+h1{font-size:1.05rem; letter-spacing:.1em; color:var(--amber);}
+h1 small{display:block; color:var(--dim); font-size:.6rem; letter-spacing:.25em; margin-top:3px;}
+.statusbar{margin-left:auto; font-size:.65rem; color:var(--green);}
+.blink{animation:bl 1.2s steps(2) infinite;}
+@keyframes bl{50%{opacity:.25}}
+main{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:14px 18px; overflow:hidden; max-width:1100px; width:100%; margin:0 auto;}
+.broadcast{
+  border:1px solid var(--line); border-left:5px solid var(--red);
+  background:var(--panel); padding:8px 14px; margin-bottom:14px; width:100%;
+  font-size:.74rem; line-height:1.7;
+}
+.broadcast b{color:var(--red); letter-spacing:.12em;}
+.panel{
+  border:1px solid var(--line); background:var(--panel); width:100%;
+  padding:24px 28px; flex:1; display:flex; flex-direction:column; overflow:hidden;
+}
+#cast-title{font-size:1.9rem; color:var(--amber); letter-spacing:.18em; font-weight:bold;}
+.castbtns{display:flex; gap:14px; margin-top:20px; flex-wrap:wrap;}
+button.op{
+  font-family:inherit; font-size:1.2rem;
+  background:#132038; color:var(--text); border:1px solid var(--cyan);
+  padding:18px 30px; cursor:pointer; letter-spacing:.08em;
+}
+button.op:hover{background:var(--cyan); color:#08131f;}
+.feedback{min-height:30px; font-size:1rem; margin-top:16px; line-height:1.8;}
+.ok{color:var(--green);} .bad{color:var(--red);} .warn{color:var(--amber);}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:1px; background:#152441;}
+.pxgrid .c{background:#0a0f1c;}
+.gridlabel{font-size:.8rem; color:var(--dim); margin-top:8px;}
+#cast-preview{margin-top:14px; text-align:center; display:none;}
+#castflash{position:fixed; inset:0; z-index:3000; display:none; background:#000;}
+#castflash.on{display:block;}
+#casthud{position:fixed; top:12px; right:16px; z-index:3001; display:none; gap:12px; align-items:center;
+  font-size:1.1rem; letter-spacing:.1em; color:#888; text-shadow:0 1px 3px #000, 0 -1px 3px #fff;}
+#casthud.on{display:flex;}
+#casthud .op{font-size:1rem; padding:12px 20px;}
+footer{border-top:1px solid var(--line); color:var(--dim); font-size:.62rem; text-align:center; padding:12px; letter-spacing:.15em;}
+</style>
+</head>
+<body>
+<a href="mission-control.html" style="position:fixed; left:10px; bottom:8px; z-index:5; font-size:.66rem; color:#5a748f; text-decoration:none; letter-spacing:.12em;">⌂ 任務入口</a>
+
+
+<header>
+  <h1>光訊號播送台（教師）<small>MISSION 02 · VIKING 1 · LIGHT SIGNAL BROADCAST</small></h1>
+  <div class="statusbar">投影機＝訊號燈 <span class="blink">●</span></div>
+</header>
+
+<main>
+  <div class="broadcast"><b>【通訊協定】</b>
+    列首快速閃爍 2 秒＝起始訊號；每拍 2 秒全屏<b style="color:var(--amber)">亮（1）／暗（0）</b>；由左至右、由上至下；整張傳完再閃爍 2 秒＝結束訊號。接收任務：逐拍記 0／1（亮＝1、暗＝0），收完塗格還原。
+  </div>
+
+  <div class="panel">
+    <span id="cast-title">第 1 張圖片</span>
+    <div class="castbtns">
+      <button class="op" id="cast-row1">試傳第 1 列（練手）</button>
+      <button class="op" id="cast-full" style="border-color:var(--amber); color:var(--amber)">📡 開始傳送圖片</button>
+      <button class="op" id="cast-revealbtn" style="display:none; border-color:var(--green); color:var(--green)">🖼 原始圖片</button>
+      <button class="op" id="cast-next" style="display:none">▶ 下一張圖片</button>
+      <button class="op" id="met-btn" style="border-color:var(--cyan)">🥁 節拍器（訊號官傳訊用）</button>
+    </div>
+    <div class="feedback" id="cast-fb"></div>
+    <div id="met-display" style="display:none; font-size:2.1rem; color:var(--cyan); letter-spacing:.15em; margin-top:14px; min-height:56px;"></div>
+    <div id="cast-preview">
+      <div class="pxwrap"><div id="cast-img" class="pxgrid"></div></div>
+      <div class="gridlabel" id="cast-name"></div>
+    </div>
+  </div>
+</main>
+
+<div id="castflash"></div>
+<div id="casthud"><span id="casthud-t"></span><button class="op" id="cast-stop">■ 停止播送</button></div>
+
+<footer>MISSION 02 · 火星第一眼：1976 維京一號的拍照任務 · 教師播送端</footer>
+
+<script>
+const LIB5 = {
+  '隕石坑':   ['01110','11111','11011','11111','01110'],
+  '火山':     ['00100','01110','01110','11111','11111'],
+  '沙丘':     ['00000','01100','11110','11111','11111'],
+  '巨大岩石': ['01110','11111','11111','11111','01100'],
+  '古河道':   ['00110','01100','01100','00110','00011'],
+  '塵捲風':   ['11111','01110','00110','00100','01110'],
+  '墜落的隕石': ['00011','00110','01100','11100','11100'],
+  '火星日出': ['00100','01110','01110','00000','11111'],
+};
+const CARD5 = Object.keys(LIB5).map(name=>({name, g:LIB5[name].map(r=>r.split('').map(Number))}));
+
+function renderInto(el, g, sizePx){
+  const n=g.length, cell=Math.round(sizePx/n);
+  el.style.gridTemplateColumns=`repeat(${n},${cell}px)`;
+  el.style.gridTemplateRows=`repeat(${n},${cell}px)`;
+  el.innerHTML='';
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++){
+    const d=document.createElement('div'); d.className='c';
+    if(g[r][c]) d.style.background='var(--px)';
+    el.appendChild(d);
+  }
+}
+
+let castDeck=[], castNum=0, castCard=null;
+function castDraw(){
+  if(!castDeck.length){ castDeck=CARD5.map((_,i)=>i);
+    for(let i=castDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [castDeck[i],castDeck[j]]=[castDeck[j],castDeck[i]]; } }
+  castCard=CARD5[castDeck.pop()]; castNum++;
+  document.getElementById('cast-title').textContent='第 '+castNum+' 張圖片';
+  document.getElementById('cast-revealbtn').style.display='none';
+  document.getElementById('cast-next').style.display='none';
+  document.getElementById('cast-preview').style.display='none';
+  document.getElementById('cast-fb').textContent='';
+}
+
+const flashEl=document.getElementById('castflash'), hudEl=document.getElementById('casthud'), hudT=document.getElementById('casthud-t');
+let castTimers=[], casting=false;
+function tickSnd(f,d){
+  try{
+    const ctx=tickSnd.ctx||(tickSnd.ctx=new (window.AudioContext||window.webkitAudioContext)());
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.frequency.value=f; o.type='square'; g.gain.value=.05;
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+d);
+  }catch(e){}
+}
+function castStopAll(msg){
+  casting=false;
+  castTimers.forEach(t=>clearTimeout(t)); castTimers=[];
+  flashEl.classList.remove('on'); hudEl.classList.remove('on');
+  if(msg) document.getElementById('cast-fb').innerHTML=msg;
+}
+function buildSeq(card, rowsOnly){
+  const seq=[];
+  const rows = rowsOnly ? 1 : 5;
+  for(let r=0;r<rows;r++){
+    seq.push({t:'flicker', label:'第 '+(r+1)+' 列・起始閃爍'});
+    for(let c=0;c<5;c++) seq.push({t:'bit', v:card.g[r][c], label:'第 '+(r+1)+' 列・第 '+(c+1)+' 拍'});
+  }
+  seq.push({t:'flicker', label:'結束訊號', end:true});
+  return seq;
+}
+function runCast(seq, isFull){
+  const beat = window.CAST_BEAT || 2000;   // 固定 2 秒節拍
+  casting=true;
+  flashEl.classList.add('on'); hudEl.classList.add('on');
+  let t=400;
+  seq.forEach(step=>{
+    if(step.t==='flicker'){
+      const flips=8, fd=2000/flips;
+      for(let i=0;i<flips;i++){
+        castTimers.push(setTimeout(()=>{ if(!casting) return;
+          flashEl.style.background = i%2 ? '#000' : '#fff';
+          if(i===0){ hudT.textContent=step.label; tickSnd(1100,.06); }
+        }, t+i*fd));
+      }
+      t+=2000;
+    }else{
+      castTimers.push(setTimeout(()=>{ if(!casting) return;
+        flashEl.style.background = step.v ? '#fff' : '#000';
+        hudT.textContent = step.label;
+        tickSnd(600,.05);
+      }, t));
+      t+=beat;
+    }
+  });
+  castTimers.push(setTimeout(()=>{
+    if(isFull){
+      castStopAll('<span class="ok">✔ 傳送完畢——完成你的畫布，等「原始圖片」揭曉比對！。</span>');
+      document.getElementById('cast-revealbtn').style.display='';
+    }else{
+      castStopAll('<span class="warn">試傳完畢——確認大家跟得上節拍後，按「開始傳送圖片」。</span>');
+    }
+  }, t+400));
+}
+document.getElementById('cast-row1').addEventListener('click',()=>{ if(casting||!castCard) return;
+  document.getElementById('cast-preview').style.display='none';
+  runCast(buildSeq(castCard, true), false); });
+document.getElementById('cast-full').addEventListener('click',()=>{ if(casting||!castCard) return;
+  document.getElementById('cast-preview').style.display='none';
+  runCast(buildSeq(castCard, false), true); });
+document.getElementById('cast-stop').addEventListener('click',()=>castStopAll('<span class="warn">已中止播送。</span>'));
+document.getElementById('cast-revealbtn').addEventListener('click',()=>{
+  renderInto(document.getElementById('cast-img'), castCard.g, 320);
+  document.getElementById('cast-name').textContent=document.getElementById('cast-title').textContent+'・原始圖片';
+  document.getElementById('cast-preview').style.display='block';
+  document.getElementById('cast-next').style.display='';
+});
+document.getElementById('cast-next').addEventListener('click',castDraw);
+/* ---------- 節拍器：訊號官傳訊對拍用 ---------- */
+let metTimers=[], metOn=false;
+const metBtn=document.getElementById('met-btn'), metDisp=document.getElementById('met-display');
+function metStop(msg){
+  metOn=false;
+  metTimers.forEach(t=>clearTimeout(t)); metTimers=[];
+  metBtn.textContent='🥁 節拍器（訊號官傳訊用）';
+  if(msg){ metDisp.textContent=msg; }
+  else metDisp.style.display='none';
+}
+function metStart(){
+  const beat = window.CAST_BEAT || 2000;   // 每格 2 秒，與播送協定相同
+  metOn=true;
+  metBtn.textContent='■ 停止節拍器';
+  metDisp.style.display='block';
+  let t=600;
+  for(let r=0;r<5;r++){
+    // 列首起始訊號：2 秒快速滴答（對應快速閃爍）
+    for(let i=0;i<8;i++){
+      metTimers.push(setTimeout(()=>{ if(!metOn) return;
+        if(i===0){ metDisp.innerHTML='⚡ 起始閃爍——準備第 '+(r+1)+' 列'; metDisp.style.color='var(--green)'; }
+        tickSnd(1100,.06);
+      }, t+i*250));
+    }
+    t+=2000;
+    // 每格 2 秒一拍 × 5 格
+    for(let c=0;c<5;c++){
+      metTimers.push(setTimeout(()=>{ if(!metOn) return;
+        metDisp.style.color='var(--cyan)';
+        metDisp.innerHTML='第 '+(r+1)+' 列・第 '+(c+1)+' 拍　<span style="color:var(--amber)">●</span>';
+        tickSnd(600,.07);
+      }, t));
+      t+=beat;
+    }
+  }
+  // 結束訊號
+  for(let i=0;i<8;i++){
+    metTimers.push(setTimeout(()=>{ if(!metOn) return;
+      if(i===0){ metDisp.innerHTML='⚡ 結束訊號——傳輸完成！'; metDisp.style.color='var(--green)'; }
+      tickSnd(1100,.06);
+    }, t+i*250));
+  }
+  t+=2000;
+  metTimers.push(setTimeout(()=>{ metOn=false; metBtn.textContent='🥁 節拍器（訊號官傳訊用）'; }, t+300));
+}
+metBtn.addEventListener('click',()=>{ metOn ? metStop() : metStart(); });
+
+castDraw();
+</script>
+</body>
+</html>

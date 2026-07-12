@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>火星第一眼：1976 維京一號的拍照任務｜任務入口</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c; --amber:#ffb347; --cyan:#5ec8f2;
+  --green:#39d353; --red:#ff5c47; --px:#f2e3c8; --text:#c9d6e8; --dim:#5a748f;
+}
+*{margin:0; padding:0; box-sizing:border-box;}
+html,body{height:100%; overflow:hidden;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Courier New','Noto Sans TC',monospace; letter-spacing:.02em;
+  display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 8%,  #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 76% 30%, #ffffff55 50%, transparent 51%),
+    radial-gradient(2px 2px at 88% 74%, #ffffff33 50%, transparent 51%),
+    radial-gradient(1px 1px at 30% 84%, #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 58%, #ffffff33 50%, transparent 51%);
+}
+header{text-align:center; padding:18px 20px 4px; flex:0 0 auto;}
+h1{font-size:2rem; color:var(--px); letter-spacing:.24em;}
+h1 small{display:block; font-size:.7rem; color:var(--dim); letter-spacing:.36em; margin-top:6px;}
+.sub{font-size:.88rem; color:var(--cyan); margin-top:8px; letter-spacing:.12em;}
+main{flex:1 1 auto; display:flex; align-items:stretch; justify-content:center; min-height:0; padding:12px 24px 6px;}
+.grid{display:grid; grid-template-columns:repeat(5,1fr); gap:16px; width:100%; max-width:1330px; height:100%;}
+.card{
+  display:flex; flex-direction:column;
+  border:2px solid var(--line); background:var(--panel);
+}
+.card:hover{border-color:var(--amber);}
+a.mainlink{
+  display:flex; flex-direction:column; gap:10px; text-decoration:none;
+  color:var(--text); flex:1 1 auto; padding:20px 16px 14px; min-height:0;
+}
+a.mainlink:hover{background:#131c30;}
+.mnum{font-size:.66rem; color:var(--dim); letter-spacing:.3em;}
+.micon{font-size:2.3rem; margin:4px 0;}
+.mname{font-size:1.22rem; color:var(--px); font-weight:bold; letter-spacing:.1em; line-height:1.5;}
+.mdesc{font-size:.86rem; color:var(--text); line-height:1.9;}
+.fill{flex:1; display:flex; align-items:center; justify-content:center; font-size:4.6rem; opacity:.14; min-height:0;}
+.go{
+  font-size:.82rem; color:var(--amber); letter-spacing:.14em;
+  border:1px solid var(--amber); background:#241a10; text-align:center; padding:10px 0;
+}
+a.mainlink:hover .go{background:var(--amber); color:#08131f;}
+.subs{display:flex; flex-direction:column; gap:6px; padding:0 16px 14px;}
+.sublabel{font-size:.62rem; color:var(--dim); letter-spacing:.2em; margin-top:10px;}
+a.sub{
+  text-decoration:none; font-size:.76rem; color:var(--cyan); letter-spacing:.04em;
+  border:1px solid var(--line); background:#101a2c; padding:9px 10px; line-height:1.5;
+}
+a.sub:hover{background:var(--cyan); color:#08131f;}
+.teachrow{display:flex; gap:10px; justify-content:center; align-items:center; padding:10px 0 4px; flex:0 0 auto;}
+a.tchip{
+  text-decoration:none; font-size:.74rem; color:var(--dim); letter-spacing:.08em;
+  border:1px dashed var(--line); background:#0a1120; padding:8px 18px;
+}
+a.tchip:hover{background:var(--dim); color:#08131f;}
+footer{flex:0 0 auto; text-align:center; font-size:.62rem; color:var(--dim); letter-spacing:.28em; padding:4px 0 10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>火星第一眼<small>1976 VIKING 1 · THE PIXEL MISSION · 任務控制中心</small></h1>
+  <div class="sub">1976 維京一號的拍照任務：一張照片，如何從火星抵達地球？選擇你的任務！</div>
+</header>
+
+<main>
+  <div class="grid">
+
+    <div class="card">
+      <a class="mainlink" href="mission1-take-first-photo.html">
+        <span class="mnum">MISSION 01</span>
+        <span class="micon">📷</span>
+        <span class="mname">拍下火星第一眼</span>
+        <span class="mdesc">相機一格一格掃描火星地表，你能多快認出它拍到了什麼？</span>
+        <span class="fill">📷</span>
+        <span class="go">▶ 進入任務</span>
+      </a>
+    </div>
+
+    <div class="card">
+      <a class="mainlink" href="mission2-send-photo-to-earth.html">
+        <span class="mnum">MISSION 02</span>
+        <span class="micon">📡</span>
+        <span class="mname">把照片傳回地球</span>
+        <span class="mdesc">照片還在火星上！要怎麼把它送回三億公里外的地球？</span>
+        <span class="fill">📡</span>
+        <span class="go">▶ 進入任務</span>
+      </a>
+      <div class="subs">
+        <span class="sublabel">▾ 本任務子頁面</span>
+        <a class="sub" href="light-signal-broadcaster.html">💡 光訊號播送台（教師投影）</a>
+        <a class="sub" href="light-signal-receiver.html">📥 光訊號接收站（學生）</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="mainlink" href="mission3-gray-levels.html">
+        <span class="mnum">MISSION 03</span>
+        <span class="micon">🌗</span>
+        <span class="mname">火星的深與淺</span>
+        <span class="mdesc">火星的照片，真的只有「亮」和「暗」兩種嗎？</span>
+        <span class="fill">🌗</span>
+        <span class="go">▶ 進入任務</span>
+      </a>
+      <div class="subs">
+        <span class="sublabel">▾ 本任務子頁面</span>
+        <a class="sub" href="grayscale-paper-decoder.html">🖌 灰階任務・紙本還原工具（學生塗色）</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="mainlink" href="mission4-bandwidth-crisis.html">
+        <span class="mnum">MISSION 04</span>
+        <span class="micon">✂</span>
+        <span class="mname">頻寬告急</span>
+        <span class="mdesc">通訊快中斷了，照片卻傳不完，怎麼讓它傳得更快？</span>
+        <span class="fill">✂</span>
+        <span class="go">▶ 進入任務</span>
+      </a>
+      <div class="subs">
+        <span class="sublabel">▾ 本任務子頁面</span>
+        <a class="sub" href="solar-storm-alert.html">🚨 太陽風暴警報台（開場投影）</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="mainlink" href="mission5-the-truth.html">
+        <span class="mnum">MISSION 05</span>
+        <span class="micon">🛰</span>
+        <span class="mname">火星第一眼的真相</span>
+        <span class="mdesc">1976 年的第一張火星照片，到底是怎麼傳到地球的？</span>
+        <span class="fill">🛰</span>
+        <span class="go">▶ 進入任務</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<div class="teachrow">
+  <a class="tchip" href="viking-radio-diagram.html">📖 圖解：真實的無線電怎麼傳圖（教師背景資料）</a>
+</div>
+
+<footer>火星第一眼：1976 維京一號的拍照任務 · MISSION CONTROL</footer>
+
+</body>
+</html>

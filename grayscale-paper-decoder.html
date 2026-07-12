@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灰階任務｜紙本還原工具（1976 維京一號）</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New","Consolas","Noto Sans TC",monospace;
+  overflow:hidden; display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff8 0, transparent 40%),
+    radial-gradient(1px 1px at 70% 15%, #fff6 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff5 0, transparent 40%),
+    radial-gradient(1px 1px at 85% 60%, #fff7 0, transparent 40%),
+    radial-gradient(1px 1px at 10% 85%, #fff5 0, transparent 40%);
+}
+header{
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+  padding:8px 18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+h1{font-size:1rem; letter-spacing:.1em; color:var(--amber);}
+h1 small{display:block; color:var(--dim); font-size:.58rem; letter-spacing:.25em; margin-top:2px;}
+.statusbar{margin-left:auto; text-align:right; font-size:.62rem; color:var(--green); line-height:1.5;}
+.blink{animation:bl 1.2s steps(2) infinite;}
+@keyframes bl{50%{opacity:.25}}
+main{flex:1; display:flex; flex-direction:column; padding:10px 16px; max-width:1400px; width:100%; margin:0 auto; overflow:hidden;}
+.broadcast{
+  border:1px solid var(--line); border-left:5px solid var(--red);
+  background:var(--panel); padding:7px 14px; margin-bottom:8px;
+  font-size:.7rem; line-height:1.6;
+}
+.broadcast b{color:var(--red); letter-spacing:.12em;}
+.chip{font-size:.72rem; padding:6px 12px; border:1px solid var(--amber); color:var(--amber); letter-spacing:.06em;}
+button.op{
+  font-family:inherit; font-size:.78rem;
+  background:#132038; color:var(--text); border:1px solid var(--cyan);
+  padding:10px 16px; cursor:pointer;
+}
+button.op:hover{background:var(--cyan); color:#08131f;}
+.console{
+  flex:1; border:1px solid var(--line); background:var(--panel);
+  display:flex; flex-wrap:wrap; gap:30px; padding:12px 18px; justify-content:center; align-items:center; overflow:hidden;
+}
+.gridcol{text-align:center;}
+.gridflex{display:flex; align-items:center; gap:6px; justify-content:center;}
+.rownums{display:grid; gap:1px; font-size:.7rem; color:var(--dim);}
+.rownums div{display:flex; align-items:center; justify-content:center; padding-right:4px;}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:1px; background:#152441;}
+.pxgrid .c{background:#0a0f1c;}
+.pxgrid.paint .c{cursor:crosshair;}
+.gridlabel{font-size:.72rem; color:var(--dim); margin-top:6px;}
+.workcol{flex:0 1 470px; min-width:330px;}
+.qtitle{font-size:1rem; color:var(--cyan); letter-spacing:.08em; margin-bottom:10px;}
+/* 塗色工具：加大按鈕區域 */
+.pal{display:flex; gap:14px; flex-wrap:wrap; margin:14px 0;}
+.pal .sw{
+  width:92px; height:92px; border:2px solid #223c60; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:1.5rem; font-weight:bold;
+}
+.pal .sw small{font-size:.68rem; font-weight:normal; margin-top:4px;}
+.pal .sw.sel{border-color:var(--amber); box-shadow:0 0 0 4px var(--amber);}
+.pal .sw.erase{background:#0a0f1c; color:var(--dim); border-style:dashed;}
+.pal .sw.erase.sel{color:var(--amber);}
+button.big{
+  font-family:inherit; font-size:.98rem; width:100%; margin-top:14px;
+  background:#241a10; color:var(--amber); border:1px solid var(--amber);
+  padding:16px; cursor:pointer; letter-spacing:.08em;
+}
+button.big:hover{background:var(--amber); color:#08131f;}
+.feedback{min-height:28px; font-size:.85rem; margin-top:10px; line-height:1.7;}
+.ok{color:var(--green);} .bad{color:var(--red);} .warn{color:var(--amber);}
+.smallrow{display:flex; gap:10px; margin-top:10px; justify-content:flex-end;}
+.hintbox{
+  border:1px dashed var(--line); background:#0a1120; padding:10px 12px;
+  font-size:.74rem; color:var(--dim); line-height:1.9; margin-top:6px;
+}
+.hintbox b{color:var(--amber);}
+footer{border-top:1px solid var(--line); color:var(--dim); font-size:.62rem; text-align:center; padding:10px; letter-spacing:.15em;}
+</style>
+</head>
+<body>
+<a href="mission-control.html" style="position:fixed; left:10px; bottom:8px; z-index:5; font-size:.66rem; color:#5a748f; text-decoration:none; letter-spacing:.12em;">⌂ 任務入口</a>
+
+<header>
+  <h1>灰階任務｜紙本還原工具<small>MISSION 03 · VIKING 1 · 1976 · PAPER DECODE STATION</small></h1>
+  <div class="statusbar">
+    <div>VIKING 1 · IMAGE LAB <span class="blink">●</span></div>
+    <div>地球影像實驗室・還原站</div>
+  </div>
+</header>
+
+<main>
+  <div class="broadcast"><b>【控制中心廣播】</b>
+    同學的<b style="color:var(--amber)">紙本編碼單</b>就是從火星傳來的訊號！對照單子上的亮度數字：<b style="color:var(--amber)">0＝黑、1＝深灰、2＝淺灰、3＝白</b>，由左至右、由上至下，一格一格把照片塗回來，再和原圖比對。
+  </div>
+
+  <div class="console" id="task-console">
+    <!-- 畫布區 -->
+    <div class="gridcol">
+      <div class="gridflex">
+        <div class="rownums" id="paint-nums"></div>
+        <div class="pxwrap"><div id="paint-grid" class="pxgrid paint"></div></div>
+      </div>
+      <div class="gridlabel" id="paint-label">還原畫布：選亮度，點格子塗色（拖曳可連續塗）</div>
+    </div>
+
+    <div class="workcol">
+      <div class="qtitle" id="work-title">▶ 紙本還原：照著編碼單上的亮度數字塗回來</div>
+      <div class="pal" id="palette"></div>
+      <div class="hintbox">
+        <b>還原口訣：</b>由左至右、由上至下，一列塗完再換下一列。<br>
+        塗錯了？選 <b>⌫ 擦除</b> 再點那一格，或整張 <b>清空畫布</b> 重來。<br>
+        塗完整張後，把畫面和<b>原圖</b>放在一起比對：一格不差，任務成功！
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="smallrow">
+        <button class="op" id="done-btn">✔ 我塗完了</button>
+        <button class="op" id="clear-btn">清空畫布</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>MISSION 03 · 火星第一眼：1976 維京一號的拍照任務</footer>
+
+<script>
+/* ---------- 4 階灰階（同任務三） ---------- */
+const GRAYC = ['#0d0d0d','#4d4d4d','#9e9e9e','#f0f0f0'];
+const GRAYNAME = ['0 黑','1 深灰','2 淺灰','3 白'];
+const ERASE = -1;
+
+let paintData=null, paintCells=null, selIdx=0;
+
+function viewSize(){ return Math.max(300, Math.min(window.innerHeight-300, 520)); }
+function buildGrid(el, n, sizePx){
+  const cell=Math.round(sizePx/n);
+  el.style.gridTemplateColumns=`repeat(${n},${cell}px)`;
+  el.style.gridTemplateRows=`repeat(${n},${cell}px)`;
+  el.innerHTML='';
+  const cells=[];
+  for(let r=0;r<n;r++){ cells.push([]);
+    for(let c=0;c<n;c++){ const d=document.createElement('div'); d.className='c'; el.appendChild(d); cells[r].push(d); } }
+  return {cells, cell};
+}
+
+/* ---------- 塗色工具（加大版，含擦除） ---------- */
+function buildPalette(){
+  const pal=document.getElementById('palette');
+  pal.innerHTML='';
+  for(let i=0;i<4;i++){
+    const s=document.createElement('div'); s.className='sw'+(i===selIdx?' sel':'');
+    s.style.background = GRAYC[i];
+    s.style.color = i<2 ? '#ddd' : '#111';
+    s.innerHTML = i+'<small>'+GRAYNAME[i].slice(2)+'</small>';
+    s.addEventListener('click',()=>{ selIdx=i; refreshSel(); });
+    pal.appendChild(s);
+  }
+  const e=document.createElement('div'); e.className='sw erase'+(selIdx===ERASE?' sel':'');
+  e.innerHTML='⌫<small>擦除</small>';
+  e.addEventListener('click',()=>{ selIdx=ERASE; refreshSel(); });
+  pal.appendChild(e);
+}
+function refreshSel(){
+  const pal=document.getElementById('palette');
+  [...pal.children].forEach((x,i)=>{
+    const idx = i<4 ? i : ERASE;
+    x.classList.toggle('sel', idx===selIdx);
+  });
+}
+
+/* ---------- 畫布 ---------- */
+function initCanvas(){
+  const vs=viewSize();
+  paintData=Array.from({length:8},()=>Array(8).fill(null));
+  const {cells,cell}=buildGrid(document.getElementById('paint-grid'), 8, vs);
+  paintCells=cells;
+  const el=document.getElementById('paint-grid');
+  let down=false;
+  const apply=t=>{
+    const idx=[...el.children].indexOf(t); if(idx<0) return;
+    const r=Math.floor(idx/8), c=idx%8;
+    if(selIdx===ERASE){
+      paintData[r][c]=null;
+      paintCells[r][c].style.background='#0a0f1c';
+    }else{
+      paintData[r][c]=selIdx;
+      paintCells[r][c].style.background=GRAYC[selIdx];
+    }
+    paintCells[r][c].style.boxShadow='';
+    document.getElementById('fb').textContent='';
+  };
+  el.onpointerdown=e=>{ down=true; apply(e.target); e.preventDefault(); };
+  el.onpointerover=e=>{ if(down) apply(e.target); };
+  window.addEventListener('pointerup',()=>{ down=false; });
+  const rn=document.getElementById('paint-nums');
+  rn.style.gridTemplateRows=`repeat(8,${cell}px)`; rn.style.gap='1px';
+  rn.innerHTML=''; for(let i=1;i<=8;i++){const d=document.createElement('div');d.textContent=i;rn.appendChild(d);}
+}
+
+/* ---------- 操作 ---------- */
+document.getElementById('clear-btn').addEventListener('click',()=>{
+  paintData.forEach(row=>row.fill(null));
+  paintCells.forEach(row=>row.forEach(d=>{ d.style.background='#0a0f1c'; d.style.boxShadow=''; }));
+  document.getElementById('fb').textContent='';
+});
+document.getElementById('done-btn').addEventListener('click',()=>{
+  let empty=0;
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    if(paintData[r][c]===null){ empty++; paintCells[r][c].style.boxShadow='inset 0 0 0 2px var(--amber)'; }
+  }
+  const fb=document.getElementById('fb');
+  if(empty>0){
+    fb.innerHTML='<span class="warn">還有 '+empty+' 格沒塗（黃框），對照編碼單補完！</span>';
+  }else{
+    fb.innerHTML='<span class="ok">✔ 64 格全部塗完！現在拿著畫面去和原圖比對：一格不差，就是無損還原成功！</span>';
+  }
+});
+
+window.addEventListener('resize',()=>{
+  // 重建畫布但保留已塗內容
+  const old=paintData.map(r=>r.slice());
+  initCanvas();
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    if(old[r][c]!==null){ paintData[r][c]=old[r][c]; paintCells[r][c].style.background=GRAYC[old[r][c]]; }
+  }
+});
+
+buildPalette();
+initCanvas();
+</script>
+</body>
+</html>

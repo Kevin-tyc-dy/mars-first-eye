@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任務四｜頻寬告急（1976 維京一號）</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New","Consolas","Noto Sans TC",monospace;
+  overflow:hidden; display:flex; flex-direction:column;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff8 0, transparent 40%),
+    radial-gradient(1px 1px at 70% 15%, #fff6 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff5 0, transparent 40%),
+    radial-gradient(1px 1px at 85% 60%, #fff7 0, transparent 40%),
+    radial-gradient(1px 1px at 10% 85%, #fff5 0, transparent 40%);
+}
+header{
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+  padding:8px 18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+h1{font-size:1rem; letter-spacing:.1em; color:var(--amber);}
+h1 small{display:block; color:var(--dim); font-size:.58rem; letter-spacing:.25em; margin-top:2px;}
+.statusbar{margin-left:auto; text-align:right; font-size:.62rem; color:var(--green); line-height:1.5;}
+.blink{animation:bl 1.2s steps(2) infinite;}
+@keyframes bl{50%{opacity:.25}}
+main{flex:1; display:flex; flex-direction:column; padding:10px 16px; max-width:1400px; width:100%; margin:0 auto; overflow:hidden;}
+.broadcast{
+  border:1px solid var(--line); border-left:5px solid var(--red);
+  background:var(--panel); padding:7px 14px; margin-bottom:8px;
+  font-size:.7rem; line-height:1.6;
+}
+.broadcast b{color:var(--red); letter-spacing:.12em;}
+.modebar{display:flex; gap:8px; justify-content:center; margin:0 0 8px; align-items:center; flex-wrap:wrap;}
+.modebtn{
+  font-family:inherit; font-size:.82rem; letter-spacing:.06em;
+  background:var(--panel); color:var(--dim); border:1px solid var(--line);
+  padding:8px 18px; cursor:pointer;
+}
+.modebtn:hover{color:var(--text); border-color:var(--cyan);}
+.modebtn.on{background:var(--amber); color:#08131f; border-color:var(--amber); font-weight:bold;}
+.chip{font-size:.72rem; padding:6px 12px; border:1px solid var(--amber); color:var(--amber); letter-spacing:.06em;}
+button.op{
+  font-family:inherit; font-size:.72rem;
+  background:#132038; color:var(--text); border:1px solid var(--cyan);
+  padding:6px 12px; cursor:pointer;
+}
+button.op:hover{background:var(--cyan); color:#08131f;}
+button.op.bon{border-color:var(--amber); color:var(--amber); background:#241a10;}
+body.bits .run{font-size:.68rem; padding:2px 5px; letter-spacing:.02em;}
+body.bits .rxline{font-size:.78rem; letter-spacing:.03em;}
+.console{
+  flex:1; border:1px solid var(--line); background:var(--panel);
+  display:flex; flex-wrap:wrap; gap:26px; padding:12px 18px; justify-content:center; align-items:center; overflow:hidden;
+}
+.gridcol{text-align:center;}
+.gridflex{display:flex; align-items:center; gap:6px; justify-content:center;}
+.rownums{display:grid; gap:1px; font-size:.7rem; color:var(--dim);}
+.rownums div{display:flex; align-items:center; justify-content:center; padding-right:4px;}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:1px; background:#152441;}
+.pxgrid .c{background:#0a0f1c;}
+.pxgrid.paint .c{cursor:crosshair;}
+.rowhl{box-shadow:inset 0 0 0 2px var(--cyan);}
+.gridlabel{font-size:.72rem; color:var(--dim); margin-top:6px;}
+.workcol{flex:0 1 520px; min-width:360px;}
+.qtitle{font-size:.98rem; color:var(--cyan); letter-spacing:.08em; margin-bottom:8px;}
+/* 壓縮列 */
+.rlerow{
+  display:flex; align-items:center; gap:6px; margin:3px 0; padding:4px 6px;
+  border:1px solid transparent; cursor:pointer;
+}
+.rlerow.active{border-color:var(--cyan); background:#0e1830;}
+.rlerow .rlabel{width:44px; font-size:.7rem; color:var(--dim); text-align:right; flex:0 0 auto;}
+.rlerow .digits{font-size:.68rem; color:#54688a; letter-spacing:.14em; width:92px; flex:0 0 auto;}
+.runs{display:flex; gap:5px; flex-wrap:wrap; min-height:26px; align-items:center; flex:1;}
+.run{
+  font-size:.82rem; padding:3px 8px; background:#050810;
+  border:1px solid var(--line); color:var(--green); letter-spacing:.05em;
+}
+.run.r1{color:var(--amber);}
+.mark{width:22px; font-size:.95rem; text-align:center; flex:0 0 auto;}
+/* 按鍵 */
+.keypad{margin-top:10px;}
+.keyrow{display:flex; gap:8px; margin-top:8px;}
+.key{
+  font-family:inherit; flex:1; font-size:1.25rem; font-weight:bold; padding:10px 0 8px;
+  cursor:pointer; line-height:1.15;
+}
+.key small{display:block; font-size:.56rem; font-weight:normal; letter-spacing:.08em; margin-top:2px;}
+.key.k0{background:#0d1a2e; color:var(--cyan); border:2px solid var(--cyan);}
+.key.k1{background:#241a10; color:var(--amber); border:2px solid var(--amber);}
+.key.k0.sel{background:var(--cyan); color:#08131f;}
+.key.k1.sel{background:var(--amber); color:#08131f;}
+.key.kn{background:#101a2c; color:var(--text); border:1px solid var(--line); font-size:1.05rem; padding:9px 0 7px;}
+.key.kn:hover{background:var(--cyan); color:#08131f; border-color:var(--cyan);}
+.key.kbs{background:#1a0f12; color:var(--red); border:2px solid var(--red); flex:0 0 76px;}
+.key.kbs:hover{background:var(--red); color:#08131f;}
+.stat{
+  display:inline-block; border:1px solid var(--line); background:#050810;
+  padding:6px 12px; margin:6px 4px 0; font-size:.74rem;
+}
+.stat b{color:var(--amber); font-size:.95rem;}
+button.big{
+  font-family:inherit; font-size:.95rem; width:100%; margin-top:10px;
+  background:#241a10; color:var(--amber); border:1px solid var(--amber);
+  padding:13px; cursor:pointer; letter-spacing:.08em;
+}
+button.big:hover{background:var(--amber); color:#08131f;}
+.feedback{min-height:26px; font-size:.82rem; margin-top:8px; line-height:1.7;}
+.ok{color:var(--green);} .bad{color:var(--red);} .warn{color:var(--amber);}
+.smallrow{display:flex; gap:8px; margin-top:6px; justify-content:flex-end;}
+/* 解壓縮列 */
+.rxline{
+  font-size:.9rem; color:var(--green); background:#050810;
+  border:1px solid var(--line); padding:7px 10px; letter-spacing:.06em;
+  flex:1; cursor:pointer; min-height:34px;
+}
+.rxline.hl{border-color:var(--cyan);}
+/* overlay */
+.overlay{
+  position:fixed; inset:0; background:rgba(4,7,14,.92); z-index:1000;
+  display:none; align-items:center; justify-content:center; padding:16px; overflow:auto;
+}
+.overlay.on{display:flex;}
+.result{
+  border:2px solid var(--green); background:var(--panel); max-width:620px; width:100%;
+  padding:24px; text-align:center; margin:auto;
+}
+.result.fail{border-color:var(--red);}
+.result h2{color:var(--green); letter-spacing:.2em; font-size:1.25rem; margin-bottom:8px;}
+.result.fail h2{color:var(--red);}
+.result .objname{font-size:1.2rem; color:var(--amber); margin:8px 0; letter-spacing:.12em;}
+.result .hint{font-size:.74rem; color:var(--dim); line-height:1.9;}
+.bignum{font-size:2rem; color:var(--green); margin:6px 0;}
+footer{border-top:1px solid var(--line); color:var(--dim); font-size:.62rem; text-align:center; padding:10px; letter-spacing:.15em;}
+</style>
+</head>
+<body>
+<a href="mission-control.html" style="position:fixed; left:10px; bottom:8px; z-index:5; font-size:.66rem; color:#5a748f; text-decoration:none; letter-spacing:.12em;">⌂ 任務入口</a>
+
+
+<header>
+  <h1>任務四｜頻寬告急<small>MISSION 04 · VIKING 1 · 1976 · BANDWIDTH EMERGENCY</small></h1>
+  <div class="statusbar">
+    <div>BANDWIDTH LOW · TAPE 87% FULL <span class="blink">●</span></div>
+    <div>已縮短 <span id="hdr-c">0</span> 張｜已還原 <span id="hdr-d">0</span> 張｜最佳紀錄 <span id="hdr-best">—</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="broadcast"><b>【任務警報】</b>
+    太陽合將至、通訊即將中斷——照片必須趕在中斷前傳完，時間不夠了！同樣的影像要用更少的訊號送回地球：連續出現的相同代號，改寫成<b style="color:var(--amber)">「代號×數量」</b>。規則只有一條：<b style="color:var(--amber)">解開後必須一格不差</b>——記得越短、傳得越快！
+  </div>
+
+  <div class="modebar">
+    <button class="modebtn on" id="m-comp">✂ 縮短訊號・把 64 筆變短</button>
+    <button class="modebtn" id="m-decomp">🔧 還原訊號・驗證一格不差</button>
+    <span class="chip">檢查次數 <b id="attempts">0</b></span>
+    <button class="op" id="board-btn">🏁 棋盤格挑戰（反例）</button>
+    <button class="op" id="bits-btn">⓪① 訊號檢視・×6 怎麼傳？</button>
+  </div>
+
+  <div class="console">
+    <!-- 影像區 -->
+    <div class="gridcol">
+      <div class="gridflex">
+        <div class="rownums" id="img-nums"></div>
+        <div class="pxwrap"><div id="img-grid" class="pxgrid"></div></div>
+      </div>
+      <div class="gridlabel" id="img-label">維京影像資料（8×8＝64 筆）——藍框＝正在處理的列</div>
+    </div>
+
+    <!-- 壓縮工作區 -->
+    <div class="workcol" id="comp-work">
+      <div class="qtitle">▶ 縮短訊號：每一列改寫成「代號×數量」（按代號→按數量）</div>
+      <div id="comp-rows"></div>
+      <div class="keypad">
+        <div class="keyrow">
+          <button class="key k0" id="ck-0">0<small>暗（背景）</small></button>
+          <button class="key k1" id="ck-1">1<small>亮（地貌）</small></button>
+          <button class="key kbs" id="ck-bs">⌫</button>
+        </div>
+        <div class="keyrow" id="numkeys"></div>
+      </div>
+      <div>
+        <span class="stat">原始 <b>64</b> 筆</span>
+        <span class="stat">你的記法 <b id="seg-cnt">0</b> 段</span>
+        <span class="stat">訊號量 <b id="ratio">—</b></span>
+        <span class="stat" id="sig-stat" style="display:none">真實訊號 <b id="sig-cnt">0</b>／64 個</span>
+      </div>
+      <button class="big" id="comp-check">🛰 檢查結果</button>
+      <div class="feedback" id="comp-fb"></div>
+      <div class="smallrow"><button class="op" id="comp-clear">清空全部</button></div>
+    </div>
+
+    <!-- 解壓縮工作區 -->
+    <div class="workcol" id="decomp-work" style="display:none">
+      <div class="qtitle">▶ 還原訊號：依「代號×數量」把影像塗回來（點格塗亮／再點擦掉）</div>
+      <div id="decomp-lines"></div>
+      <button class="big" id="decomp-check">🛰 檢查還原結果（一格不差才過關）</button>
+      <div class="feedback" id="decomp-fb"></div>
+      <div class="smallrow"><button class="op" id="decomp-clear">清空畫布</button></div>
+    </div>
+  </div>
+</main>
+
+<!-- 結算 -->
+<div class="overlay" id="doneovl">
+  <div class="result" id="resbox">
+    <h2 id="d-title">✔ 縮短成功・還原驗證通過</h2>
+    <div class="objname" id="d-name"></div>
+    <div class="bignum" id="d-num"></div>
+    <div class="hint" id="d-note"></div>
+    <button class="big" id="d-next">📡 下一張影像</button>
+  </div>
+</div>
+
+<footer>MISSION 04 · 火星第一眼：1976 維京一號的拍照任務</footer>
+
+<script>
+/* ---------- 8×8 影像庫（沿用任務二地貌） ---------- */
+function P(rows){ return rows.map(r=>r.split('').map(Number)); }
+const LIB8 = {
+  '隕石坑': P(['00111100','01111110','11000011','11011011','11011011','11000011','01111110','00111100']),
+  '火山':   P(['00100100','00111100','00111100','01111110','01111110','11111111','11111111','00000000']),
+  '沙丘':   P(['00000000','00000000','00000000','00110000','01111010','11111111','11111111','00000000']),
+  '巨大岩石': P(['00000000','00111100','01111110','11111111','11111111','01111110','00011100','00000000']),
+  '古河道': P(['00011000','00110000','01100000','01100000','00110000','00011000','00001100','00011000']),
+  '塵捲風': P(['01111110','00111100','00111100','00011000','00011000','00001000','00011100','00000000']),
+  '墜落的隕石': P(['00000011','00000110','00001100','00011000','00110000','01111000','11111000','01110000']),
+  '火星日出': P(['00011000','00100100','00111100','01111110','01111110','00111100','00000000','11111111']),
+};
+const BOARD = (()=>{ const g=[]; for(let r=0;r<8;r++){ g.push([]); for(let c=0;c<8;c++) g[r].push((r+c)%2); } return g; })();
+const BW={0:'#0a0f1c',1:'#f2e3c8'};
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function viewSize(){ return Math.max(300, Math.min(window.innerHeight-330, 480)); }
+function buildGrid(el, n, sizePx){
+  const cell=Math.round(sizePx/n);
+  el.style.gridTemplateColumns=`repeat(${n},${cell}px)`;
+  el.style.gridTemplateRows=`repeat(${n},${cell}px)`;
+  el.innerHTML='';
+  const cells=[];
+  for(let r=0;r<n;r++){ cells.push([]);
+    for(let c=0;c<n;c++){ const d=document.createElement('div'); d.className='c'; el.appendChild(d); cells[r].push(d); } }
+  return {cells, cell};
+}
+function rle(arr){
+  const out=[]; let cur=arr[0], n=1;
+  for(let i=1;i<arr.length;i++){ if(arr[i]===cur) n++; else{ out.push([cur,n]); cur=arr[i]; n=1; } }
+  out.push([cur,n]); return out;
+}
+
+/* ---------- 狀態 ---------- */
+let mode='comp', secret=null, deck=[], attempts=0, doneC=0, doneD=0, best=null;
+let imgCells=null, isBoard=false;
+let runs=null, activeRow=0, curVal=null;   // 壓縮
+let bitsView=false;
+const bin3=n=>(n%8).toString(2).padStart(3,'0');
+const fmt=(v,n)=> bitsView ? v+'‧'+bin3(n) : v+'×'+n;
+function sigNote(seg){
+  if(!bitsView) return '';
+  const sig=seg*4;
+  return '<br>⓪① 真實傳送：每段＝1 個代號訊號＋3 個數量訊號＝4 個 0/1 訊號 → '+seg+' 段×4＝<b class="warn">'+sig+'</b> 個訊號 vs 原始 <b class="warn">64</b> 個'+(sig<64?'——真的變短了，划算！':sig===64?'——剛好打平，沒賺沒賠。':'——咦，反而變長了！16 段剛好打平，<b class="warn">15 段以內</b>真實傳送才划算。');
+}
+let paintData=null;                        // 解壓縮
+
+function g(){ return isBoard ? BOARD : LIB8[secret]; }
+function updateHdr(){
+  document.getElementById('attempts').textContent=attempts;
+  document.getElementById('hdr-c').textContent=doneC;
+  document.getElementById('hdr-d').textContent=doneD;
+  document.getElementById('hdr-best').textContent = best===null ? '—' : best+'%';
+}
+function pickSecret(){
+  if(!deck.length) deck=shuffle(Object.keys(LIB8));
+  secret=deck.pop(); isBoard=false;
+}
+function renderImage(paintable){
+  const vs=viewSize();
+  const b=buildGrid(document.getElementById('img-grid'), 8, vs);
+  imgCells=b.cells;
+  const rn=document.getElementById('img-nums');
+  rn.style.gridTemplateRows=`repeat(8,${b.cell}px)`; rn.style.gap='1px';
+  rn.innerHTML=''; for(let i=1;i<=8;i++){const d=document.createElement('div');d.textContent=i;rn.appendChild(d);}
+  const el=document.getElementById('img-grid');
+  if(paintable){
+    el.classList.add('paint');
+    paintData=Array.from({length:8},()=>Array(8).fill(0));
+    let down=false, to=null;
+    const apply=t=>{
+      const idx=[...el.children].indexOf(t); if(idx<0) return;
+      const r=Math.floor(idx/8), c=idx%8;
+      if(to===null) to = paintData[r][c]?0:1;
+      paintData[r][c]=to; imgCells[r][c].style.background=BW[to]; imgCells[r][c].style.boxShadow='';
+    };
+    el.onpointerdown=e=>{ down=true; to=null; apply(e.target); e.preventDefault(); };
+    el.onpointerover=e=>{ if(down) apply(e.target); };
+    window.addEventListener('pointerup',()=>{ down=false; to=null; });
+    document.getElementById('img-label').textContent='地球端還原畫布（8×8）——依右側「代號×數量」塗回影像';
+  }else{
+    el.classList.remove('paint');
+    el.onpointerdown=null; el.onpointerover=null;
+    for(let r=0;r<8;r++) for(let c=0;c<8;c++) imgCells[r][c].style.background=BW[g()[r][c]];
+    document.getElementById('img-label').textContent='維京影像資料（8×8＝64 筆）——藍框＝正在處理的列';
+  }
+}
+function hlRow(r){
+  if(!imgCells) return;
+  imgCells.forEach((row,ri)=>row.forEach(d=>d.classList.toggle('rowhl', ri===r)));
+}
+
+/* ---------- 壓縮任務 ---------- */
+function rowLen(r){ return runs[r].reduce((a,[,n])=>a+n,0); }
+function segTotal(){ return runs.reduce((a,rr)=>a+rr.length,0); }
+function compRender(){
+  const wrap=document.getElementById('comp-rows');
+  wrap.querySelectorAll('.rlerow').forEach((row,r)=>{
+    row.classList.toggle('active', r===activeRow);
+    const rc=row.querySelector('.runs');
+    rc.innerHTML = runs[r].length
+      ? runs[r].map(([v,n])=>`<span class="run ${v?'r1':''}">${fmt(v,n)}</span>`).join('')
+      : '<span style="color:#31435e; font-size:.75rem">（按下方按鍵組出這一列）</span>';
+  });
+  hlRow(activeRow);
+  const seg=segTotal();
+  document.getElementById('seg-cnt').textContent=seg;
+  document.getElementById('ratio').textContent = seg ? Math.round(seg/64*100)+'%' : '—';
+  document.getElementById('sig-cnt').textContent = seg*4;
+  document.querySelectorAll('.key.k0,.key.k1').forEach(k=>k.classList.remove('sel'));
+  if(curVal===0) document.getElementById('ck-0').classList.add('sel');
+  if(curVal===1) document.getElementById('ck-1').classList.add('sel');
+}
+function compBuild(){
+  const wrap=document.getElementById('comp-rows');
+  wrap.innerHTML='';
+  for(let r=0;r<8;r++){
+    const d=document.createElement('div'); d.className='rlerow';
+    d.innerHTML=`<span class="rlabel">第${r+1}列</span><span class="digits">${g()[r].join('')}</span><span class="runs"></span><span class="mark"></span>`;
+    d.addEventListener('click',()=>{ activeRow=r; compRender(); });
+    wrap.appendChild(d);
+  }
+}
+function compNew(fromBoard){
+  if(fromBoard){ isBoard=true; secret='棋盤格'; }
+  else pickSecret();
+  attempts=0; runs=Array.from({length:8},()=>[]); activeRow=0; curVal=null;
+  updateHdr(); renderImage(false); compBuild(); compRender();
+  document.getElementById('comp-fb').innerHTML = fromBoard
+    ? '<span class="warn">🏁 棋盤格挑戰——先猜猜看：這張圖壓得短嗎？</span>' : '';
+  document.querySelectorAll('#comp-rows .mark').forEach(m=>m.textContent='');
+}
+document.getElementById('ck-0').addEventListener('click',()=>{ curVal=0; compRender(); });
+document.getElementById('ck-1').addEventListener('click',()=>{ curVal=1; compRender(); });
+const nk=document.getElementById('numkeys');
+for(let n=1;n<=8;n++){
+  const b=document.createElement('button'); b.className='key kn'; b.textContent='×'+n;
+  b.addEventListener('click',()=>{
+    if(curVal===null){
+      document.getElementById('comp-fb').innerHTML='<span class="warn">先按代號（0 或 1），再按數量！</span>'; return;
+    }
+    if(rowLen(activeRow)>=8) return;
+    runs[activeRow].push([curVal,n]);
+    if(rowLen(activeRow)>8){ runs[activeRow].pop();
+      document.getElementById('comp-fb').innerHTML='<span class="bad">這一列只有 8 格——加上 ×'+n+' 就超過了！</span>'; return;
+    }
+    document.getElementById('comp-fb').textContent='';
+    if(rowLen(activeRow)===8 && activeRow<7) activeRow++;
+    compRender();
+  });
+  nk.appendChild(b);
+}
+document.getElementById('ck-bs').addEventListener('click',()=>{
+  if(runs[activeRow].length) runs[activeRow].pop();
+  else if(activeRow>0){ activeRow--; runs[activeRow].pop(); }
+  compRender();
+});
+document.getElementById('comp-clear').addEventListener('click',()=>{
+  runs=Array.from({length:8},()=>[]); activeRow=0; curVal=null;
+  document.querySelectorAll('#comp-rows .mark').forEach(m=>m.textContent='');
+  document.getElementById('comp-fb').textContent='';
+  compRender();
+});
+document.getElementById('comp-check').addEventListener('click',()=>{
+  attempts++; updateHdr();
+  let allOk=true, badRows=[];
+  for(let r=0;r<8;r++){
+    const exp=[]; runs[r].forEach(([v,n])=>{ for(let i=0;i<n;i++) exp.push(v); });
+    const ok = exp.join('')===g()[r].join('');
+    const mk=document.querySelectorAll('#comp-rows .mark')[r];
+    mk.textContent = runs[r].length ? (ok?'✔':'✘') : '…';
+    mk.className='mark '+(ok?'ok':(runs[r].length?'bad':'warn'));
+    if(!ok){ allOk=false; badRows.push(r+1); }
+  }
+  if(!allOk){
+    document.getElementById('comp-fb').innerHTML='<span class="bad">✘ 第 '+badRows.join('、')+' 列解開後和原圖不符——解開後必須一格不差！</span>';
+    return;
+  }
+  const seg=segTotal(), ratio=Math.round(seg/64*100);
+  doneC++; if(!isBoard && (best===null||ratio<best)) best=ratio;
+  updateHdr();
+  const box=document.getElementById('resbox');
+  if(seg>=64){
+    box.className='result fail';
+    document.getElementById('d-title').textContent='⚠ 還原無誤——但一筆都沒省！';
+    document.getElementById('d-name').textContent='「'+secret+'」';
+    document.getElementById('d-num').textContent='64 筆 → '+seg+' 段';
+    document.getElementById('d-note').innerHTML='這種<b class="warn">代號不斷交錯</b>的影像，「代號×數量」幫不上忙——<b class="warn">沒有萬能的縮短法！</b>大片連續相同代號的影像，這一招才有效。'+sigNote(seg);
+  }else{
+    box.className='result';
+    document.getElementById('d-title').textContent='✔ 縮短成功・還原驗證通過';
+    document.getElementById('d-name').textContent='「'+secret+'」';
+    document.getElementById('d-num').textContent='64 筆 → '+seg+' 段';
+    document.getElementById('d-note').innerHTML='省下 <b class="warn">'+(64-seg)+'</b> 筆、訊號量只剩 <b class="warn">'+ratio+'%</b>——傳輸時間大幅縮短，磁帶空間也省下來了！祕密就在：這張影像有<b class="warn">大片連續相同的代號</b>。'+sigNote(seg);
+  }
+  document.getElementById('doneovl').classList.add('on');
+});
+document.getElementById('board-btn').addEventListener('click',()=>{
+  setMode('comp', true);
+});
+const bcast=document.querySelector('.broadcast');
+const bcastAlert=bcast.innerHTML;
+const bcastBits='<b>【真實傳送格式】</b> 「×6 的 6 怎麼用無線電送？」數字也能變 0/1（第三節學過）——每段＝<b style="color:var(--amber)">1 個代號訊號＋3 個數量訊號</b>（×1=001、×2=010…×7=111；×8 約定用 000）＝4 個 0/1 訊號。格式事先約好，這就是<b style="color:var(--amber)">通訊協定</b>！';
+document.getElementById('bits-btn').addEventListener('click',()=>{
+  bitsView=!bitsView;
+  document.getElementById('bits-btn').classList.toggle('bon',bitsView);
+  document.body.classList.toggle('bits',bitsView);
+  document.getElementById('sig-stat').style.display=bitsView?'':'none';
+  bcast.innerHTML=bitsView?bcastBits:bcastAlert;
+  if(mode==='comp') compRender();
+  else document.querySelectorAll('#decomp-lines .rxline').forEach(ln=>{
+    const r=+ln.dataset.r;
+    ln.textContent=rle(g()[r]).map(([v,n])=>fmt(v,n)).join('，');
+  });
+});
+
+/* ---------- 解壓縮任務 ---------- */
+function decompNew(){
+  pickSecret(); attempts=0; updateHdr();
+  renderImage(true);
+  const wrap=document.getElementById('decomp-lines');
+  wrap.innerHTML='';
+  for(let r=0;r<8;r++){
+    const d=document.createElement('div'); d.className='rlerow';
+    const txt=rle(g()[r]).map(([v,n])=>fmt(v,n)).join('，');
+    d.innerHTML=`<span class="rlabel">第${r+1}列</span><div class="rxline" data-r="${r}">${txt}</div>`;
+    wrap.appendChild(d);
+  }
+  wrap.querySelectorAll('.rxline').forEach(ln=>{
+    ln.addEventListener('click',()=>{
+      const on=!ln.classList.contains('hl');
+      wrap.querySelectorAll('.rxline').forEach(x=>x.classList.remove('hl'));
+      imgCells.forEach(row=>row.forEach(d=>d.classList.remove('rowhl')));
+      if(on){ ln.classList.add('hl'); imgCells[+ln.dataset.r].forEach(d=>d.classList.add('rowhl')); }
+    });
+  });
+  document.getElementById('decomp-fb').textContent='';
+}
+document.getElementById('decomp-clear').addEventListener('click',()=>{
+  paintData.forEach(row=>row.fill(0));
+  imgCells.forEach(row=>row.forEach(d=>{ d.style.background=BW[0]; d.style.boxShadow=''; }));
+});
+document.getElementById('decomp-check').addEventListener('click',()=>{
+  attempts++; updateHdr();
+  let wrong=0;
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    const ok=paintData[r][c]===g()[r][c];
+    imgCells[r][c].style.boxShadow = ok ? '' : 'inset 0 0 0 2px var(--red)';
+    if(!ok) wrong++;
+  }
+  if(wrong===0){
+    doneD++; updateHdr();
+    const box=document.getElementById('resbox');
+    box.className='result';
+    document.getElementById('d-title').textContent='✔ 還原成功・一格不差';
+    document.getElementById('d-name').textContent='「'+secret+'」';
+    const seg=g().reduce((a,row)=>a+rle(row).length,0);
+    document.getElementById('d-num').textContent=seg+' 段 → 64 筆';
+    document.getElementById('d-note').innerHTML='「代號×數量」完整還原成原始影像——<b class="warn">能一格不差還原，這個記法才算成功！</b>';
+    document.getElementById('doneovl').classList.add('on');
+  }else{
+    document.getElementById('decomp-fb').innerHTML='<span class="bad">✘ 有 '+wrong+' 格與「代號×數量」不符（紅框）——逐列對照「代號×數量」再修！</span>';
+  }
+});
+
+/* ---------- 模式切換 ---------- */
+function setMode(m, board){
+  mode=m;
+  document.getElementById('m-comp').classList.toggle('on', m==='comp');
+  document.getElementById('m-decomp').classList.toggle('on', m==='decomp');
+  document.getElementById('comp-work').style.display = m==='comp' ? '' : 'none';
+  document.getElementById('decomp-work').style.display = m==='decomp' ? '' : 'none';
+  m==='comp' ? compNew(!!board) : decompNew();
+}
+document.getElementById('m-comp').addEventListener('click',()=>setMode('comp'));
+document.getElementById('m-decomp').addEventListener('click',()=>setMode('decomp'));
+document.getElementById('d-next').addEventListener('click',()=>{
+  document.getElementById('doneovl').classList.remove('on');
+  mode==='comp' ? compNew(false) : decompNew();
+});
+setMode('comp');
+</script>
+</body>
+</html>

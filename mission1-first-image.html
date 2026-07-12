@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任務一｜火星傳回的第一張照片</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --panel2:#111b30; --line:#1e3a5c;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New","Consolas","Noto Sans TC",monospace;
+  min-height:100vh;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff8 0, transparent 40%),
+    radial-gradient(1px 1px at 70% 15%, #fff6 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff5 0, transparent 40%),
+    radial-gradient(1px 1px at 85% 60%, #fff7 0, transparent 40%),
+    radial-gradient(1px 1px at 10% 85%, #fff5 0, transparent 40%),
+    radial-gradient(1.5px 1.5px at 55% 45%, #fff4 0, transparent 40%),
+    radial-gradient(1px 1px at 92% 88%, #fff6 0, transparent 40%);
+}
+body::after{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:999;
+  background:repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.12) 2px 4px);
+  mix-blend-mode:multiply;
+}
+header{
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+  padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+h1{font-size:1.1rem; letter-spacing:.1em; color:var(--amber);}
+h1 small{display:block; color:var(--dim); font-size:.65rem; letter-spacing:.25em; margin-top:4px;}
+.statusbar{margin-left:auto; text-align:right; font-size:.68rem; color:var(--green); line-height:1.7;}
+.blink{animation:bl 1.2s steps(2) infinite;}
+@keyframes bl{50%{opacity:.25}}
+main{max-width:980px; margin:0 auto; padding:20px 16px 70px;}
+.broadcast{
+  border:1px solid var(--line); border-left:5px solid var(--red);
+  background:var(--panel); padding:12px 16px; margin-bottom:16px;
+  font-size:.85rem; line-height:1.9;
+}
+.broadcast b{color:var(--red); letter-spacing:.12em;}
+.stagechips{display:flex; gap:8px; justify-content:center; margin:10px 0 16px;}
+.chip{
+  font-size:.72rem; padding:6px 14px; border:1px solid var(--line); color:var(--dim); letter-spacing:.08em;
+}
+.chip.on{background:var(--amber); color:#08131f; border-color:var(--amber); font-weight:bold;}
+.chip.done{color:var(--green); border-color:var(--green);}
+.console{
+  border:1px solid var(--line); background:var(--panel);
+  display:flex; flex-wrap:wrap; gap:20px; padding:20px; justify-content:center;
+}
+.viewwrap{text-align:center; flex:0 1 auto;}
+.pxwrap{display:inline-block; border:2px solid var(--line); background:#050810; padding:8px;}
+.pxgrid{display:grid; gap:1px; background:#152441;}
+.pxgrid .c{background:#0a0f1c;}
+.stat{
+  display:inline-block; border:1px solid var(--line); background:#050810;
+  padding:7px 13px; margin:8px 4px 0; font-size:.75rem;
+}
+.stat b{color:var(--amber); font-size:1rem;}
+.hint{font-size:.72rem; color:var(--dim); line-height:1.8; margin-top:8px;}
+.answerzone{flex:1; min-width:300px; max-width:420px;}
+.qtitle{font-size:.95rem; color:var(--cyan); letter-spacing:.1em; margin-bottom:10px;}
+.options{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.opt{
+  font-family:inherit; font-size:.88rem; letter-spacing:.05em;
+  background:#132038; color:var(--text); border:1px solid var(--cyan);
+  padding:14px 10px; cursor:pointer;
+}
+.opt:hover{background:var(--cyan); color:#08131f;}
+.opt:disabled{background:#0c1220; color:#44536b; border-color:#22304a; cursor:not-allowed; text-decoration:line-through;}
+button.big{
+  font-family:inherit; font-size:.92rem; width:100%; margin-top:14px;
+  background:#241a10; color:var(--amber); border:1px solid var(--amber);
+  padding:14px; cursor:pointer; letter-spacing:.08em;
+}
+button.big:hover{background:var(--amber); color:#08131f;}
+button.big:disabled{opacity:.35; cursor:not-allowed;}
+.feedback{min-height:34px; font-size:.85rem; margin-top:12px; line-height:1.8;}
+.ok{color:var(--green);} .bad{color:var(--red);} .warn{color:var(--amber);}
+.scorebar{
+  display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap;
+}
+/* success overlay */
+#overlay{
+  position:fixed; inset:0; background:rgba(4,7,14,.9); z-index:1000;
+  display:none; align-items:center; justify-content:center; padding:20px;
+}
+#overlay.on{display:flex;}
+.result{
+  border:2px solid var(--green); background:var(--panel); max-width:560px; width:100%;
+  padding:26px; text-align:center;
+}
+.result.fail{border-color:var(--red);}
+.result h2{color:var(--green); letter-spacing:.2em; font-size:1.3rem; margin-bottom:6px;}
+.result.fail h2{color:var(--red);}
+.result .objname{font-size:1.5rem; color:var(--amber); margin:10px 0; letter-spacing:.15em;}
+.result .pts{font-size:2.6rem; color:var(--green); margin:6px 0;}
+.result .hint{text-align:center;}
+footer{
+  border-top:1px solid var(--line); color:var(--dim); font-size:.62rem;
+  text-align:center; padding:14px; letter-spacing:.15em;
+}
+@media (max-width:640px){ .options{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>任務一｜火星傳回的第一張照片<small>MISSION 01 · FIRST IMAGE FROM MARS</small></h1>
+  <div class="statusbar">
+    <div>LINK: EARTH ⇄ MARS <span class="blink">●</span></div>
+    <div>已完成目標 <span id="hdr-done">0</span>｜累計 <span id="hdr-score">0</span> 分</div>
+  </div>
+</header>
+
+<main>
+  <div class="broadcast"><b>【控制中心廣播】</b>
+    探測車成功降落火星，開始拍攝周圍的地貌！照片訊號會分三段抵達——一段比一段清楚，但你越早辨認出拍到的地貌，得分越高。<br>
+    <span style="color:var(--amber)">第 1 段就答對＝10 分．第 2 段＝7 分．第 3 段＝5 分（每答錯一次 −2 分）</span>
+  </div>
+
+  <div class="stagechips">
+    <span class="chip" id="chip1">第 1 段訊號 · 4×4</span>
+    <span class="chip" id="chip2">第 2 段訊號 · 8×8</span>
+    <span class="chip" id="chip3">第 3 段訊號 · 16×16</span>
+  </div>
+
+  <div class="console">
+    <div class="viewwrap">
+      <div class="pxwrap"><div id="view" class="pxgrid"></div></div>
+      <div>
+        <span class="stat">解析度 <b id="resname">—</b></span>
+        <span class="stat">像素 <b id="pxcount">—</b> 格</span>
+      </div>
+      <div class="hint">格子越少＝每個像素越大＝細節流失越多</div>
+    </div>
+
+    <div class="answerzone">
+      <div class="qtitle">▶ 控制中心詢問：探測車拍到了什麼地貌？</div>
+      <div class="options" id="options"></div>
+      <button class="big" id="next-signal">📡 太模糊了，接收下一段訊號</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <div class="scorebar">
+    <span class="stat">本回合可得 <b id="stagepts">10</b> 分</span>
+    <span class="stat">已完成目標 <b id="done">0</b> 個</span>
+    <span class="stat">累計得分 <b id="score">0</b> 分</span>
+  </div>
+</main>
+
+<div id="overlay">
+  <div class="result" id="resultbox">
+    <h2 id="r-title">✔ 辨識成功</h2>
+    <div class="hint" id="r-sub"></div>
+    <div class="pxwrap" style="margin:14px 0"><div id="r-view" class="pxgrid"></div></div>
+    <div class="objname" id="r-name"></div>
+    <div class="pts" id="r-pts"></div>
+    <div class="hint" id="r-data"></div>
+    <button class="big" id="r-next">🛰 接收下一個機密目標</button>
+  </div>
+</div>
+
+<footer>MISSION 01 · 星際通訊大挑戰 · FIRST IMAGE FROM MARS</footer>
+
+<script>
+/* ---------- 16×16 pixel art library ---------- */
+function P(rows){ return rows.map(r=>r.split('').map(Number)); }
+const LIB = {
+  '隕石坑': P([
+    '0000000000000000','0000000000000000','0000111111110000','0011111111111100',
+    '0111100000011110','0111000000001110','1110000000000111','1110000110000111',
+    '1110000110000111','1110000000000111','0111000000001110','0111100000011110',
+    '0011111111111100','0000111111110000','0000000000000000','0000000000000000']),
+  '火山': P([
+    '0000000000000000','0000001001000000','0000000110000000','0000011001100000',
+    '0000111001110000','0000111111110000','0001111111111000','0001111111111000',
+    '0011111111111100','0011111111111100','0111111111111110','0111111111111110',
+    '1111111111111111','1111111111111111','0000000000000000','0000000000000000']),
+  '沙丘': P([
+    '0000000000000000','0000000000000000','0000000000000000','0000000000000000',
+    '0000000000000000','0000000000000000','0000000000000000','0000110000000000',
+    '0001111000001100','0011111100011110','0111111110111111','1111111111111111',
+    '1111111111111111','1111111111111111','0000000000000000','0000000000000000']),
+  '巨大岩石': P([
+    '0000000000000000','0000000000000000','0000000000000000','0000011111000000',
+    '0001111111110000','0011111111111000','0111111111111100','0111111111111110',
+    '1111111111111110','1111111111111100','0111111111111011','0011111111110011',
+    '0001111111100000','0000000000000000','0000000000000000','0000000000000000']),
+  '乾涸河道': P([
+    '0000000011000000','0000000111000000','0000001110000000','0000011100000000',
+    '0000111000000000','0001110000000000','0011100000000000','0011100000000000',
+    '0001110000000000','0000111000000000','0000011100000000','0000001110000000',
+    '0000001110000000','0000011100000000','0000111000000000','0001110000000000']),
+  '塵捲風': P([
+    '0011111111111000','0001111111110000','0000111111100000','0000111111100000',
+    '0000011111000000','0000011111000000','0000001110000000','0000001110000000',
+    '0000000111000000','0000000111000000','0000000011000000','0000000011000000',
+    '0000000110000000','0000001110000000','0000011111000000','0000000000000000']),
+  '墜落的隕石': P([
+    '0000000000000110','0000000000001100','0000000000011000','0000000000110000',
+    '0000000001100000','0000000011000000','0000000110000000','0000001100000000',
+    '0000011000000000','0001111100000000','0011111110000000','0111111111000000',
+    '0111111111000000','0011111110000000','0001111100000000','0000000000000000']),
+  '火星日出': P([
+    '0000000110000000','0000000110000000','0010000000000100','0000000000000000',
+    '0000011111100000','0000111111110000','0001111111111000','1101111111111011',
+    '1101111111111011','0001111111111000','0000111111110000','0000011111100000',
+    '0010000000000100','0000000000000000','1111111111111111','1111111111111111']),
+};
+const NAMES = Object.keys(LIB);
+
+function downsample(g, factor){ // 區塊內實體格 ≥ 30% 才點亮
+  const n=16/factor, out=[], need=Math.max(1, Math.round(factor*factor*0.3));
+  for(let r=0;r<n;r++){ out.push([]);
+    for(let c=0;c<n;c++){ let v=0;
+      for(let i=0;i<factor;i++) for(let j=0;j<factor;j++) v+=g[r*factor+i][c*factor+j];
+      out[r].push(v>=need?1:0); } }
+  return out;
+}
+function renderPx(el, g, sizePx){
+  const n=g.length, cell=Math.round(sizePx/n);
+  el.style.gridTemplateColumns=`repeat(${n},${cell}px)`;
+  el.style.gridTemplateRows=`repeat(${n},${cell}px)`;
+  el.innerHTML='';
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++){
+    const d=document.createElement('div'); d.className='c';
+    if(g[r][c]) d.style.background='var(--px)';
+    el.appendChild(d);
+  }
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- 任務狀態 ---------- */
+const STAGES=[{res:4,pts:10},{res:8,pts:7},{res:16,pts:5}];
+let secret=null, stage=0, wrong=0, done=0, score=0, deck=[];
+
+const viewEl=document.getElementById('view');
+const optsEl=document.getElementById('options');
+const fbEl=document.getElementById('feedback');
+const nextBtn=document.getElementById('next-signal');
+
+function currentPts(){ return Math.max(1, STAGES[stage].pts - wrong*2); }
+function updateStats(){
+  document.getElementById('stagepts').textContent=currentPts();
+  document.getElementById('done').textContent=done;
+  document.getElementById('score').textContent=score;
+  document.getElementById('hdr-done').textContent=done;
+  document.getElementById('hdr-score').textContent=score;
+}
+function renderStage(){
+  const res=STAGES[stage].res;
+  const g = res===16 ? LIB[secret] : downsample(LIB[secret], 16/res);
+  renderPx(viewEl, g, 360);
+  document.getElementById('resname').textContent=res+'×'+res;
+  document.getElementById('pxcount').textContent=res*res;
+  [0,1,2].forEach(i=>{
+    const c=document.getElementById('chip'+(i+1));
+    c.className='chip'+(i<stage?' done':(i===stage?' on':''));
+  });
+  nextBtn.disabled = stage>=2;
+  nextBtn.textContent = stage>=2 ? '📡 已是最清晰訊號——請作答！' : '📡 太模糊了，接收下一段訊號（可得分數會降低）';
+  updateStats();
+}
+function newRound(){
+  if(!deck.length) deck=shuffle([...NAMES]);
+  secret=deck.pop();
+  stage=0; wrong=0;
+  fbEl.textContent='';
+  // 產生選項（全部 8 個，順序打亂）
+  optsEl.innerHTML='';
+  shuffle([...NAMES]).forEach(n=>{
+    const b=document.createElement('button'); b.className='opt'; b.textContent=n;
+    b.addEventListener('click',()=>answer(b,n));
+    optsEl.appendChild(b);
+  });
+  renderStage();
+}
+function answer(btn, name){
+  if(name===secret){
+    const pts=currentPts();
+    score+=pts; done++;
+    showResult(true, pts);
+  }else{
+    wrong++;
+    btn.disabled=true;
+    fbEl.innerHTML='<span class="bad">✘ 控制中心比對資料庫——不是「'+name+'」。</span> <span class="warn">再觀察，或接收下一段訊號（目前可得 '+currentPts()+' 分）</span>';
+    updateStats();
+  }
+}
+nextBtn.addEventListener('click',()=>{
+  if(stage<2){ stage++; renderStage();
+    fbEl.innerHTML='<span class="warn">已接收第 '+(stage+1)+' 段訊號——像素變多、細節更清楚了！</span>';
+  }
+});
+function showResult(okFlag, pts){
+  const box=document.getElementById('resultbox');
+  box.className='result'+(okFlag?'':' fail');
+  document.getElementById('r-title').textContent = okFlag?'✔ 辨識成功':'任務結束';
+  document.getElementById('r-sub').textContent = '在第 '+(stage+1)+' 段訊號（'+STAGES[stage].res+'×'+STAGES[stage].res+'）完成辨識'+(wrong?('，答錯 '+wrong+' 次'):'');
+  renderPx(document.getElementById('r-view'), LIB[secret], 220);
+  document.getElementById('r-name').textContent='「'+secret+'」';
+  document.getElementById('r-pts').textContent='+'+pts+' 分';
+  document.getElementById('r-data').innerHTML='同一張圖：4×4 只需 <b class="warn">16</b> 格資料、8×8 要 <b class="warn">64</b> 格、16×16 要 <b class="warn">256</b> 格——越清楚，資料量越大！';
+  document.getElementById('overlay').classList.add('on');
+  updateStats();
+}
+document.getElementById('r-next').addEventListener('click',()=>{
+  document.getElementById('overlay').classList.remove('on');
+  newRound();
+});
+newRound();
+</script>
+</body>
+</html>
