@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教案說明｜火星第一眼:1976 維京一號的拍照任務</title>
+<style>
+:root{
+  --bg:#070b14; --panel:#0d1424; --line:#1e3a5c; --line2:#2a4a72;
+  --green:#39d353; --amber:#ffb347; --red:#ff5c47; --cyan:#5ec8f2;
+  --text:#cfe3ff; --dim:#7d93b5; --px:#f2e3c8;
+}
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.85;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 8%,  #ffffff33 50%, transparent 51%),
+    radial-gradient(1px 1px at 76% 30%, #ffffff44 50%, transparent 51%),
+    radial-gradient(2px 2px at 88% 74%, #ffffff22 50%, transparent 51%),
+    radial-gradient(1px 1px at 30% 84%, #ffffff33 50%, transparent 51%);
+}
+header{
+  text-align:center; padding:46px 20px 26px;
+  border-bottom:2px solid var(--line);
+  background:linear-gradient(180deg,#0c1526,#070b14);
+}
+.mono{font-family:"Courier New",monospace;}
+header .tag{font-size:.78rem; color:var(--cyan); letter-spacing:.5em; margin-bottom:10px;}
+h1{font-size:2rem; color:var(--px); letter-spacing:.14em;}
+header .sub{color:var(--dim); margin-top:10px; font-size:.95rem;}
+.chips{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px;}
+.chip{font-size:.8rem; border:1px solid var(--line2); padding:5px 14px; color:var(--text); background:#0a1120;}
+.chip b{color:var(--amber);}
+nav{
+  position:sticky; top:0; z-index:50; background:#0a1120ee; backdrop-filter:blur(4px);
+  border-bottom:1px solid var(--line); display:flex; justify-content:center; flex-wrap:wrap; gap:2px; padding:6px 8px;
+}
+nav a{color:var(--dim); text-decoration:none; font-size:.85rem; padding:6px 13px; letter-spacing:.05em;}
+nav a:hover{color:var(--amber); background:#131c30;}
+main{max-width:1060px; margin:0 auto; padding:20px 18px 60px;}
+section{margin-top:44px;}
+h2{
+  font-size:1.3rem; color:var(--amber); letter-spacing:.12em; margin-bottom:16px;
+  padding-left:12px; border-left:5px solid var(--amber);
+}
+h3{color:var(--cyan); font-size:1.03rem; margin:18px 0 8px; letter-spacing:.06em;}
+p{margin:8px 0;}
+.panel{border:1px solid var(--line); background:var(--panel); padding:18px 22px; margin:12px 0;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media (max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+.kv{font-size:.92rem;}
+.kv b{color:var(--px);}
+table{border-collapse:collapse; width:100%; font-size:.88rem; margin:10px 0;}
+th,td{border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left;}
+th{background:#101a2c; color:var(--px); white-space:nowrap;}
+td b{color:var(--amber);}
+.goal-list{list-style:none;}
+.goal-list li{padding:4px 0 4px 4px; border-bottom:1px dashed #14243d; font-size:.93rem;}
+.goal-list b{color:var(--cyan); margin-right:8px; font-family:"Courier New",monospace;}
+/* 單元卡 */
+.unit{border:2px solid var(--line); background:var(--panel); margin:22px 0;}
+.unit-head{
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  padding:14px 20px; background:#101a2c; border-bottom:1px solid var(--line);
+}
+.unit-head .no{font-family:"Courier New",monospace; color:var(--cyan); font-size:.85rem; letter-spacing:.2em;}
+.unit-head .name{font-size:1.15rem; color:var(--px); font-weight:bold; letter-spacing:.08em;}
+.unit-head .concept{color:var(--amber); font-size:.85rem; margin-left:auto;}
+.unit-body{padding:14px 20px 18px;}
+.flow{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:12px 0;}
+@media (max-width:820px){.flow{grid-template-columns:1fr;}}
+.stage{border:1px dashed var(--line2); background:#0a1120; padding:12px 14px; font-size:.88rem;}
+.stage b{display:block; color:var(--amber); margin-bottom:6px; font-size:.92rem;}
+.res{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+.res a, .res span.file{
+  text-decoration:none; font-size:.8rem; padding:6px 12px; border:1px solid var(--line2);
+  color:var(--cyan); background:#101a2c; letter-spacing:.03em;
+}
+.res a:hover{background:var(--cyan); color:#08131f;}
+.res span.file{color:var(--px); border-style:dashed; cursor:default;}
+.res .lbl{font-size:.8rem; color:var(--dim); padding:6px 2px;}
+.note{font-size:.85rem; color:var(--dim); border-left:3px solid var(--line2); padding-left:12px; margin-top:10px;}
+.note b{color:var(--red);}
+details{border:1px solid var(--line); background:var(--panel); margin:10px 0;}
+summary{cursor:pointer; padding:12px 18px; color:var(--px); font-weight:bold; letter-spacing:.05em;}
+summary:hover{color:var(--amber);}
+details .inner{padding:4px 18px 16px;}
+img.figure{max-width:100%; border:2px solid var(--line); background:#fff; display:block; margin:10px auto;}
+.figcap{text-align:center; font-size:.82rem; color:var(--dim); margin-bottom:16px;}
+.warnbox{border:1px solid var(--red); background:#1a0d10; padding:14px 18px; margin:14px 0; font-size:.9rem;}
+.warnbox b{color:var(--red);}
+.okbox{border:1px solid var(--green); background:#0a170d; padding:14px 18px; margin:14px 0; font-size:.9rem;}
+.okbox b{color:var(--green);}
+footer{border-top:1px solid var(--line); text-align:center; color:var(--dim); font-size:.75rem; letter-spacing:.2em; padding:22px; margin-top:40px;}
+.pill{display:inline-block; font-size:.75rem; border:1px solid var(--amber); color:var(--amber); padding:1px 8px; margin-left:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag mono">MISSION BRIEFING · VIKING 1 · 1976</div>
+  <h1>火星第一眼：1976 維京一號的拍照任務</h1>
+  <div class="sub">國小科技課程教案說明網頁｜科技教育議題・資訊教育議題（彈性學習課程）｜教學設計：11475C021 張文宜、11475C001 賴英顥、11475C014 喻琬容、11475C012 葉芸菁</div>
+  <div class="chips">
+    <div class="chip">對象 <b>國小高年級</b></div>
+    <div class="chip">節數 <b>5 節 200 分鐘</b></div>
+    <div class="chip">班級 <b>30 人 6 組</b></div>
+    <div class="chip">型態 <b>不插電＋輕量數位互動</b></div>
+    <div class="chip">數學 <b>融入三、四、五節</b></div>
+  </div>
+</header>
+
+<nav>
+  <a href="#overview">課程總覽</a>
+  <a href="#focus">學習重點與目標</a>
+  <a href="#units">五節課單元</a>
+  <a href="#assess">評量設計</a>
+  <a href="#resources">教學資源</a>
+  <a href="#tips">教學提醒</a>
+</nav>
+
+<main>
+
+<!-- ======================= 課程總覽 ======================= -->
+<section id="overview">
+  <h2>一、課程總覽</h2>
+  <div class="panel">
+    <p><b style="color:var(--px)">課程核心問題：</b>1976 年，維京一號如何把「火星的第一眼」記錄下來、再化為訊號傳回地球？</p>
+    <p>1976 年 7 月 20 日，維京一號登陸火星克里斯平原，以「掃描式相機」拍下人類史上第一張火星地表照片，並以無線電將它傳回約三億四千萬公里外的地球（訊號單程約 19 分鐘）。本課程讓學生扮演維京任務團隊重演這段歷史：切格子記錄（像素）、0 與 1 回傳（編碼與協定）、記下深淺（灰階與位元）、資料瘦身（遊程壓縮），最後在傳圖接力中跑完整條旅程並揭曉史實真相。每節課回扣雙情境：<b style="color:var(--amber)">1976 年維京一號做的事，和今天手機拍照傳圖，是同一套資訊原理。</b></p>
+  </div>
+  <div class="grid2">
+    <div class="panel kv">
+      <h3 style="margin-top:0">STEM 設計面向</h3>
+      <p><b>S 科學</b>：真實火星影像的觀察與判讀、太陽合與太陽風暴的天文情境。</p>
+      <p><b>T 科技</b>：像素、解析度、二進位、通訊協定、灰階與位元深度、遊程編碼、頻寬。</p>
+      <p><b>E 工程</b>：在同步與雜訊限制下設計、測試並改良光訊號通訊流程。</p>
+      <p><b>M 數學</b>：二元表示、倍增規律、資料量估算、「代號×數量」符號化表述。</p>
+    </div>
+    <div class="panel kv">
+      <h3 style="margin-top:0">素養與議題對應</h3>
+      <p><b>核心素養</b>：A2 系統思考與解決問題、B1 符號運用與溝通表達、C2 人際關係與團隊合作。</p>
+      <p><b>議題實質內涵</b>：科 E1、資 E2、資 E3、資 E10（Ⅲ 碼引自國教院《國民小學科技教育及資訊教育課程發展參考說明》2020）。</p>
+      <p><b>先備知識</b>：手機拍照傳圖經驗、方格座標辨識、基本乘除與計數。</p>
+    </div>
+  </div>
+  <img class="figure" src="img-course-map.png" alt="課程設計架構圖">
+  <div class="figcap">課程設計架構圖：核心素養 → 學習重點 → 核心問題 → 五單元 → STEM → 素養導向多元評量</div>
+</section>
+
+<!-- ======================= 學習重點與目標 ======================= -->
+<section id="focus">
+  <h2>二、學習重點與學習目標</h2>
+  <table>
+    <tr><th>領域／議題</th><th>學習內容</th><th>學習表現</th></tr>
+    <tr><td><b>科技教育議題</b></td><td>科議 N-Ⅲ-1 科技的基本特性。<br>科議 A-Ⅲ-1 日常科技產品的使用方法。</td><td>科議 k-Ⅲ-1 說明常見科技產品的用途與運作方式。</td></tr>
+    <tr><td><b>資訊教育議題</b></td><td>資議 D-Ⅲ-1 常見的數位資料類型與儲存架構。<br>資議 A-Ⅲ-1 結構化的問題解決表示方法。</td><td>資議 t-Ⅲ-2 運用資訊科技解決生活中的問題。<br>資議 t-Ⅲ-3 運用運算思維解決問題。<br>資議 a-Ⅲ-1 理解資訊科技於日常生活之重要性。</td></tr>
+    <tr><td><b>數學領域（融入）</b></td><td>數 R-5-3 以符號表示數學公式。</td><td>數 r-III-3 觀察數量關係並以文字或符號正確表述。</td></tr>
+  </table>
+  <div class="panel">
+    <ul class="goal-list">
+      <li><b>1-1</b>能說明掃描式相機把景物切成像素逐格記錄，並比較解析度高低對特徵保留與資料量的影響。</li>
+      <li><b>1-2</b>能扮演掃描相機，觀察無格線地貌圖、自行決定解析度，將地貌影像轉為方格紀錄卡。</li>
+      <li><b>2-1</b>能推論無線電只有「有訊號／無訊號」兩種狀態，運用 0 與 1 完成影像的二元編碼與解碼。</li>
+      <li><b>2-2</b>能說明通訊協定（代號、順序、圖片大小）一致性的重要。</li>
+      <li><b>3-1</b>能以 4 階灰階代碼（0～3）記錄亮度，完成灰階照片的編碼與解碼。</li>
+      <li><b>3-2</b>能推論以兩個 0／1 訊號傳送一格的 4 階亮度，理解位元數與階數的倍增關係。</li>
+      <li><b>4-1</b>能使用「代號×數量」的遊程編碼，對影像資料進行無損壓縮與還原。</li>
+      <li><b>4-2</b>能計算並比較壓縮率，歸納出適合壓縮的影像特徵。</li>
+      <li><b>5-1</b>能運用倍增規律，說明維京一號以 6 位元記錄 64 階灰階的原理。</li>
+      <li><b>5-2</b>能估算真實照片的訊號量與傳輸時間，說明壓縮與協定為何必要。</li>
+      <li><b>5-3</b>能與組員分站合作完成影像從記錄、壓縮、編碼、傳送到還原的完整旅程。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ======================= 五節課單元 ======================= -->
+<section id="units">
+  <h2>三、五節課單元設計</h2>
+
+  <!-- 單元一 -->
+  <div class="unit">
+    <div class="unit-head"><span class="no">MISSION 01</span><span class="name">拍下火星第一眼</span><span class="concept">像素・解析度</span></div>
+    <div class="unit-body">
+      <div class="flow">
+        <div class="stage"><b>引起動機</b>任務廣播：1976 登陸！第一張照片拍的是自己的腳墊。提問：沒有底片，相機要怎麼把景象「留下來」？小組討論發表。</div>
+        <div class="stage"><b>發展活動</b>收斂「切格子逐格記」命名像素 → 4×4／8×8／16×16 地貌判讀挑戰（數位任務頁競賽）→ 掃描記錄任務：領「無格線」地貌圖，小組討論要切多細、從 6×6／8×8／12×12 三種紀錄卡選一張，逐格忠實記錄。</div>
+        <div class="stage"><b>綜合活動</b>總結：像素、解析度決定細節與資料量；討論「相機會挑重點記嗎？」拋出懸念：照片還在火星上！</div>
+      </div>
+      <div class="res">
+        <span class="lbl">資源：</span>
+        <a href="mission1-take-first-photo.html">🎮 判讀挑戰</a>
+        <a href="mission1-first-image.html">📷 史實照片頁</a>
+        <a href="kit-1-terrain-cards.docx">📄 任務一套件（學習單下載）</a>
+        <a href="slides-1-first-photo.pptx">🎞 本節簡報下載</a>
+      </div>
+      <div class="note">評量：地貌判讀紀錄表、掃描紀錄卡（自選解析度，技能檢核）。<b>要點：</b>紀錄卡是第二、四節素材，一律影印留底；教師另備標準 8×8 保底卡。</div>
+    </div>
+  </div>
+
+  <!-- 單元二 -->
+  <div class="unit">
+    <div class="unit-head"><span class="no">MISSION 02</span><span class="name">把照片傳回地球</span><span class="concept">二元編碼・通訊協定</span></div>
+    <div class="unit-body">
+      <div class="flow">
+        <div class="stage"><b>引起動機</b>照片還在火星！腦力激盪「怎麼送回地球」→ 逐一評估（火箭太慢、沒有郵差、拉不了電線）→ 收斂：送「訊號」，無線電是學生推理出的結論。</div>
+        <div class="stage"><b>發展活動</b>約定通訊協定四要素（代號、順序、節拍、同步）→ 第一輪教師「光訊號播送台」全班抄收（含重新對齊救援規則）→ 第二輪學生手電筒分組傳輸 5×5 圖卡（遮光必要、玻璃紙分頻道）。</div>
+        <div class="stage"><b>綜合活動</b>通訊事故命名（同步、雜訊頻道、單向鏈路）＋協定破壞實驗 → 課堂⇄真實工程對照表 → 懸念：只有黑白夠嗎？</div>
+      </div>
+      <div class="res">
+        <span class="lbl">資源：</span>
+        <a href="mission2-send-photo-to-earth.html">📡 發報機／協定實驗室</a>
+        <a href="light-signal-broadcaster.html">💡 播送台（教師）</a>
+        <a href="light-signal-receiver.html">📥 接收站（學生）</a>
+        <a href="kit-2-light-signal.docx">📄 任務二光訊號傳輸套件（學習單下載）</a>
+        <a href="slides-2-send-to-earth.pptx">🎞 本節簡報下載</a>
+      </div>
+      <div class="note">評量：個人接收紀錄單（人人一張）、分組還原比對。<b>要點：</b>遮光是本節最大成敗因子；兩輪順序不可顛倒；錯誤是最珍貴的討論素材。</div>
+    </div>
+  </div>
+
+  <!-- 單元三 -->
+  <div class="unit">
+    <div class="unit-head"><span class="no">MISSION 03</span><span class="name">火星的深與淺</span><span class="concept">灰階・位元深度</span></div>
+    <div class="unit-body">
+      <div class="flow">
+        <div class="stage"><b>引起動機</b>出示 1976 史實照片：「只有亮和暗兩種嗎？」發現深灰、淺灰與亮部，2 階剪影 vs 4 階立體感對比。</div>
+        <div class="stage"><b>發展活動</b>約定亮度代碼 0～3（維京實機 6 位元 64 階＝位元深度）→ 灰階編碼與解碼任務（貼灰階小卡或只還原兩列）→ 核心討論：只有 0 和 1 怎麼傳 0～3？收斂兩位元約定 00／01／10／11。</div>
+        <div class="stage"><b>綜合活動</b>總結：灰階照片資料量翻倍（64→128 訊號）！課後延伸挑戰：8 階要怎麼約定？懸念：頻寬告急。</div>
+      </div>
+      <div class="res">
+        <span class="lbl">資源：</span>
+        <a href="mission3-gray-levels.html">🌗 照片觀察／灰階任務</a>
+        <a href="grayscale-paper-decoder.html">🖌 紙本還原工具</a>
+        <a href="kit-3-grayscale-codes.docx">📄 任務三套件（學習單下載）</a>
+        <a href="slides-3-gray-levels.pptx">🎞 本節簡報下載</a>
+      </div>
+      <div class="note">評量：4 階灰階編碼單（邏輯檢核）。<b>要點：</b>倍增規律只收斂到 2 位元＝4 階，推廣到 6 位元留給第五節；灰階資料是第四節壓縮的素材。</div>
+    </div>
+  </div>
+
+  <!-- 單元四 -->
+  <div class="unit">
+    <div class="unit-head"><span class="no">MISSION 04</span><span class="name">頻寬告急</span><span class="concept">遊程編碼・壓縮率</span></div>
+    <div class="unit-body">
+      <div class="flow">
+        <div class="stage"><b>引起動機</b>太陽風暴警報：太陽合將至、通訊中斷數週，照片必須趕在中斷前傳完！檢視編碼表發現連續重複：可不可以只寫一次、註明連續幾個？</div>
+        <div class="stage"><b>發展活動</b>收斂「代號×數量」寫法（每段＝4 個訊號由教師直接告知）→ 單列練習 → 縮短與還原任務：逐列改寫、計算壓縮率、與鄰組交換無損還原（任務成功制，不排名不限時）。</div>
+        <div class="stage"><b>綜合活動</b>棋盤格反例實算（64 段×4＝256 訊號反而四倍長）→ 沒有萬能的壓縮法 → 此刻才命名「壓縮／遊程編碼」。</div>
+      </div>
+      <div class="res">
+        <span class="lbl">資源：</span>
+        <a href="solar-storm-alert.html">🚨 警報台（開場投影）</a>
+        <a href="mission4-bandwidth-crisis.html">✂ 縮短與還原挑戰</a>
+        <a href="kit-4-rle-worksheet.docx">📄 任務四套件（學習單下載）</a>
+        <a href="slides-4-bandwidth-crisis.pptx">🎞 本節簡報下載</a>
+      </div>
+      <div class="note">評量：遊程壓縮紀錄單（邏輯檢核）、資料量統計欄（數學融入）。<b>要點：</b>數位任務頁全程刻意不出現「壓縮」一詞；時間壓力只留在敘事，操作不限時。</div>
+    </div>
+  </div>
+
+  <!-- 單元五 -->
+  <div class="unit">
+    <div class="unit-head"><span class="no">MISSION 05</span><span class="name">火星第一眼的真相</span><span class="concept">6 位元・全流程統整</span></div>
+    <div class="unit-body">
+      <div class="flow">
+        <div class="stage"><b>引起動機</b>通訊即將恢復！課後挑戰揭曉（8 階＝3 個訊號）→ 控制中心要求最後一次全流程演練。</div>
+        <div class="stage"><b>發展活動</b>五站傳圖接力（記錄→壓縮→編碼→傳送→還原；各站完成後隨影像移站當副手；未變短的列標記「原樣直傳」）→ 真相解密：掃描帶拼出第一張照片 → 沿倍增規律推出 6 位元＝64 階 → 資料量估算：500 萬訊號 ÷ 250/秒 ≈ 五個多小時。</div>
+        <div class="stage"><b>綜合活動</b>手機照片檔案橋接（解析度與 MB 數）→ 課末抽站反思（抽到哪站答哪站）＋組內互評欄 → 全課程總結：表示、編碼、壓縮、取捨。</div>
+      </div>
+      <div class="res">
+        <span class="lbl">資源：</span>
+        <a href="mission5-the-truth.html">🛰 掃描帶演示／位元階梯</a>
+        <a href="kit-5-relay-sheets.docx">📄 任務五套件（學習單下載）</a>
+        <a href="slides-5-the-truth.pptx">🎞 本節簡報下載</a>
+      </div>
+      <div class="note">評量：傳圖接力紀錄單（總結性評量，五站對應五節課概念）。<b>要點：</b>與「故障診斷任務」二選一；個人等級以該站產出＋抽站反思評定，不與小組成敗連動。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 評量設計 ======================= -->
+<section id="assess">
+  <h2>四、評量設計</h2>
+  <div class="grid3">
+    <div class="panel kv"><h3 style="margin-top:0">🔧 技能檢核</h3><p>單元一之自選解析度掃描紀錄卡：檢視解析度選擇理由、逐格忠實記錄與特徵可辨認。</p></div>
+    <div class="panel kv"><h3 style="margin-top:0">🧠 邏輯檢核</h3><p>第三節灰階編碼單與第四節遊程壓縮紀錄單：檢核編碼、解碼與壓縮還原的正確率、壓縮率統計。</p></div>
+    <div class="panel kv"><h3 style="margin-top:0">💬 素養反思</h3><p>第五節傳圖接力與課末抽站口頭反思：檢視概念統整、口語表達與合作互評（C2 證據）。</p></div>
+  </div>
+  <details>
+    <summary>▼ 素養導向評量檢核表（A～E 五等級規準，點開查看）</summary>
+    <div class="inner">
+      <table>
+        <tr><th>單元</th><th>評量目標</th><th>A（優異）</th><th>C（基礎）</th></tr>
+        <tr><td>一</td><td>能說明影像由像素組成，並自行決定解析度，將無格線地貌掃描為方格紀錄卡。</td><td>能說明解析度與特徵保留、資料量的關係，並說明自組選擇解析度的理由；紀錄卡逐格忠實記錄、他組一眼可辨認。</td><td>能說出影像由像素組成，並在提示下完成紀錄卡。</td></tr>
+        <tr><td>二</td><td>能運用 0 與 1 的光訊號完成編碼傳輸與解碼還原。</td><td>依節拍正確收發整張影像且還原無誤，能說明協定四要素缺一不可的理由。</td><td>能在提示下完成單列光訊號的發送或接收。</td></tr>
+        <tr><td>三</td><td>能以 4 階灰階記錄亮度，並推論兩位元傳 4 階的方式。</td><td>編碼解碼全對，能主動說明兩位元約定與倍增關係。</td><td>能在提示下完成大部分灰階塗色與解碼。</td></tr>
+        <tr><td>四</td><td>能以「代號×數量」無損壓縮並正確還原。</td><td>能壓縮還原整張影像並計算壓縮率，說明何種影像適合／不適合遊程編碼。</td><td>能在提示下完成單列資料的壓縮或還原。</td></tr>
+        <tr><td>五</td><td>能分站完成完整旅程，說明 6 位元 64 階原理與真實資料量。</td><td>接力一次成功，自行推出 6 位元＝64 階並正確估算量級，說得出自己一站的功能與必要性。</td><td>能完成自己一站的任務，說得出該站負責什麼。</td></tr>
+      </table>
+      <p class="note">完整 A～E 五級規準見教案文件；E 級均為「未達 D 級」。課程實施前後可依學生評分表現調整評量指引，形成教學、評量、修正的循環。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ======================= 教學資源 ======================= -->
+<section id="resources">
+  <h2>五、教學資源總覽</h2>
+  <h3>🌐 數位任務頁（免安裝，瀏覽器直接開啟）</h3>
+  <div class="panel">
+    <p>所有數位任務頁、教案、簡報與學習單皆已收錄於本站。全站入口：<a style="color:var(--amber)" href="https://kevin-tyc-dy.github.io/mars-first-eye/">kevin-tyc-dy.github.io/mars-first-eye</a>（任務入口，上課投影與學生平板輸入此網址即可）。</p>
+    <div class="res">
+      <a href="mission-control.html">⌂ 任務入口</a>
+      <a href="viking-radio-diagram.html">📖 教師圖解：無線電傳圖</a>
+    </div>
+  </div>
+  <h3>📄 紙本套件（Word 學習單，直接列印）</h3>
+  <div class="panel">
+    <div class="res">
+      <a href="kit-1-terrain-cards.docx">任務一｜無格線地貌圖卡＋三種解析度紀錄卡</a>
+      <a href="kit-2-light-signal.docx">任務二｜5×5 圖卡與接收紀錄單</a>
+      <a href="kit-3-grayscale-codes.docx">任務三｜灰階代碼卡與編碼單</a>
+      <a href="kit-4-rle-worksheet.docx">任務四｜遊程壓縮紀錄單</a>
+      <a href="kit-5-relay-sheets.docx">任務五｜接力紀錄單與計算單</a>
+    </div>
+    <p class="note">點擊即下載（瀏覽器無法直接開啟 Word 檔屬正常現象）。</p>
+  </div>
+  <h3>🖼 解說圖片與動畫</h3>
+  <div class="panel">
+    <img class="figure" src="img-viking-radio-diagram.png" alt="圖解：維京一號無線電傳圖">
+    <div class="figcap">教師背景資料：維京一號無線電傳圖（第二節收斂討論投影用）</div>
+    <img class="figure" style="max-width:520px" src="anim-pixel-resolution.gif" alt="像素解析度漸變動畫">
+    <div class="figcap">像素解析度漸變動畫：10×10 → 20×20 → 50×50 → 100×100 → 原始影像（第一節、第五節皆可用）</div>
+  </div>
+  <h3>📘 教案文件（三個版本）</h3>
+  <div class="panel"><div class="res"><a href="lesson-plan-original.docx">原版教案</a><a href="lesson-plan-revised.docx">修訂版教案</a><a href="lesson-plan-exemplar.docx">示例格式版教案</a></div></div>
+  <h3>🎞 教學簡報（MISSION 01～05）</h3>
+  <div class="panel">
+    <div class="res">
+      <a href="slides-1-first-photo.pptx">第一節</a>
+      <a href="slides-2-send-to-earth.pptx">第二節</a>
+      <a href="slides-3-gray-levels.pptx">第三節</a>
+      <a href="slides-4-bandwidth-crisis.pptx">第四節</a>
+      <a href="slides-5-the-truth.pptx">第五節</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 教學提醒 ======================= -->
+<section id="tips">
+  <h2>六、教學提醒（實施要點）</h2>
+  <div class="okbox"><b>敘事貫穿：</b>五節課的任務廣播依 1976 年維京任務真實時間軸推進（登陸拍照 → 回傳 → 灰階深淺 → 太陽合前的頻寬告急 → 通訊恢復後的真相解密），建議以「任務控制中心廣播」口吻開場並延續；概念一律先操作、發現、討論，再收斂命名。</div>
+  <div class="okbox"><b>素材連貫：</b>第一節的紀錄卡即第二節要回傳的「照片」、第四節壓縮沿用同批影像；學生作品一律影印留底，教師另備標準保底卡，避免跨週素材遺失造成連鎖中斷。</div>
+  <div class="warnbox"><b>第二節成敗關鍵：</b>兩階段順序不可顛倒（教師完美節拍先建立技能）；遮光為必要條件，教室過亮是最大失敗因子；漏拍、錯位、反光干擾都是最珍貴的討論素材，先讓事故發生，再幫它命名。</div>
+  <div class="okbox"><b>評量把關：</b>第五節接力即總結性評量，個人等級以該站產出＋課末抽站反思評定，不與小組成敗連動；課程實施前後可依學生表現調整評量指引。</div>
+  <div class="okbox"><b>史實數字：</b>以「約」表述量級即可：距離約 3.4 億公里、單程約 19 分鐘、直傳每秒約 250 個訊號（維京實務多數影像經軌道器以較高速率中繼，課堂為凸顯頻寬限制以直傳情境簡化，出處：NASA Viking 任務史料）。</div>
+</section>
+
+</main>
+
+<footer>火星第一眼：1976 維京一號的拍照任務 · MISSION CONTROL · 教案說明網頁</footer>
+
+</body>
+</html>
